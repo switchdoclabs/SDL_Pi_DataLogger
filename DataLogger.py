@@ -3,19 +3,21 @@
 # Gather Data, put in SQL, Graph with MatPlot Lib 
 # SwitchDoc Labs
 # 05/31/2016
-# Version 1.1 6/15/2016
+# Version 1.2 6/30/2016
 #
 # supports:
 # INA3221 - 3 Channel Current / Voltage Measurement Device
 # ADS1115 - 4 Channel 16bit ADC
 # OURWEATHER - OurWeather Complete Weather Kit 
+# Three Panel Test - 3 Solar Cells and 3 SunAirPlus boards 
 
 # configuration variables
 # set to true if present, false if not
 
 INA3221_Present = False
 ADS1115_Present = False
-OURWEATHER_Present = True
+OURWEATHER_Present = False
+ThreePanelTest_Present = True
 
 # imports
 
@@ -28,6 +30,7 @@ import time
 from datetime import datetime
 import random 
 
+
 if INA3221_Present:
 	import SDL_Pi_INA3221
 	import INA3221Functions
@@ -39,13 +42,12 @@ if ADS1115_Present:
 if OURWEATHER_Present:
 	import OURWEATHERFunctions
 
-
+if ThreePanelTest_Present:
+	import ThreePanelTestFunctions
 
 
 
 from datetime import timedelta
-
-
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -59,7 +61,7 @@ LengthSample = 600000
 #When to generate graph (every how many minutes) 
 GraphRefresh = 2.0
 #GraphRefresh = 10.0
-#How many samples to Grah
+#How many samples to Graph
 GraphSampleCount =2880 
 
 
@@ -114,12 +116,20 @@ def doAllGraphs():
     	OURWEATHERFunctions.buildOURWEATHERGraphTemperature(password, GraphSampleCount)
     	OURWEATHERFunctions.buildOURWEATHERGraphWind(password, GraphSampleCount)
 
+    if ThreePanelTest_Present:
+    	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
+    	ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
 
 
 if __name__ == '__main__':
 
     scheduler = BackgroundScheduler()
 
+    #OURWEATHERFunctions.readOURWEATHERData(password)
+
+    ThreePanelTestFunctions.readThreePanelTestData(password)
+    ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
+    ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
 
     if INA3221_Present:
 	scheduler.add_job(INA3221Functions.readINA3221Data, 'interval', seconds=SampleTime, args=[password])
@@ -129,6 +139,9 @@ if __name__ == '__main__':
 
     if OURWEATHER_Present:
 	scheduler.add_job(OURWEATHERFunctions.readOURWEATHERData, 'interval', seconds=SampleTime, args=[password])
+
+    if ThreePanelTest_Present:
+	scheduler.add_job(ThreePanelTestFunctions.readThreePanelTestData, 'interval', seconds=SampleTime, args=[password])
 
     minuteCron = "*/"+str(int(GraphRefresh))
     scheduler.add_job(doAllGraphs, 'cron', minute=minuteCron )

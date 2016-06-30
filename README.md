@@ -4,15 +4,20 @@ June 01, 2016: Set up to measure current using Grove INA3221 3 channel Current M
 June 11, 2016: Set up to measure voltage using Grove ADS1115 4 Channel 16 Bit ADC Board
 June 15, 2016: Added configuration variables
 June 18, 2016: Installed OurWeather suppot / Fixed multiple graph generation
+June 30, 2016: Added software to measure three solar panels at once through an I2C Mux and Three SunAirPlus boards
 
 Supports the INA3221 Grove Breakout Board or SunAirPlus on switchdoc.com
 Supports the ADS1115 Grove Breakout Board on switchdoc.com
 Supports the OurWeather Full Weather Kit
+Supports the Grove 4 Channel I2C Mux
 
 SunAirPlus - https://store.switchdoc.com/sunairplus-solar-controller-charger-sun-tracker-data-gathering-grove-header/
 INA3221 - https://store.switchdoc.com/ina3221-breakout-board-3-channel-current-voltage-monitor-grove-headers-compare-to-ina219-grove-headers/
 ADS1115 - http://store.switchdoc.com/grove-4-channel-16-bit-analog-to-digital-converter/
 OurWeather - http://store.switchdoc.com/ourweather-complete-weather-kit/ 
+Grove 4 CHannel I2C Mux - http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/
+
+
 
 See the blog posting on www.switchdoc.com about setting up the DataLogger:
 http://www.switchdoc.com/2016/06/datalogger-measuregraphlog-current-raspberry-pi/
