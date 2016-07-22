@@ -3,13 +3,15 @@
 # Gather Data, put in SQL, Graph with MatPlot Lib 
 # SwitchDoc Labs
 # 05/31/2016
-# Version 1.2 6/30/2016
+# Version 1.5 7/18/2016
 #
 # supports:
 # INA3221 - 3 Channel Current / Voltage Measurement Device
 # ADS1115 - 4 Channel 16bit ADC
 # OURWEATHER - OurWeather Complete Weather Kit 
 # Three Panel Test - 3 Solar Cells and 3 SunAirPlus boards 
+# WXLink from SwitchDoc Labs
+
 
 # configuration variables
 # set to true if present, false if not
@@ -17,7 +19,8 @@
 INA3221_Present = False
 ADS1115_Present = False
 OURWEATHER_Present = False
-ThreePanelTest_Present = True
+ThreePanelTest_Present = False
+WXLINK_Present = True
 
 # imports
 
@@ -44,6 +47,9 @@ if OURWEATHER_Present:
 
 if ThreePanelTest_Present:
 	import ThreePanelTestFunctions
+
+if WXLINK_Present:
+	import WXLINKFunctions
 
 
 
@@ -81,6 +87,7 @@ print ""
 print " Will work with the INA3221 SwitchDoc Labs Breakout Board"
 print " Will work with the ADS1115 SwitchDoc Labs Breakout Board"
 print " Will work with OurWeather - Complete Weather Kit" 
+print " Will work with SwitchDoc Labs WxLink Wireless LInk " 
 print "Program Started at:"+ time.strftime("%Y-%m-%d %H:%M:%S")
 print ""
 
@@ -120,16 +127,22 @@ def doAllGraphs():
     	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
     	ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
 
+    if WXLINK_Present:
+    	WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
+    	#WXLINKFunctions.buildWXLINKGraphCurrent(password, GraphSampleCount)
+    	#WXLINKFunctions.buildWXLINKGraphVoltage(password, GraphSampleCount)
+
 
 if __name__ == '__main__':
 
     scheduler = BackgroundScheduler()
 
-    #OURWEATHERFunctions.readOURWEATHERData(password)
+    WXLINKFunctions.readWXLINKData(password)
+    WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
 
-    ThreePanelTestFunctions.readThreePanelTestData(password)
-    ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
-    ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
+    #ThreePanelTestFunctions.readThreePanelTestData(password)
+    #ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
+    #ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
 
     if INA3221_Present:
 	scheduler.add_job(INA3221Functions.readINA3221Data, 'interval', seconds=SampleTime, args=[password])
@@ -142,6 +155,9 @@ if __name__ == '__main__':
 
     if ThreePanelTest_Present:
 	scheduler.add_job(ThreePanelTestFunctions.readThreePanelTestData, 'interval', seconds=SampleTime, args=[password])
+
+    if WXLINK_Present:
+	scheduler.add_job(WXLINKFunctions.readWXLINKData, 'interval', seconds=SampleTime, args=[password])
 
     minuteCron = "*/"+str(int(GraphRefresh))
     scheduler.add_job(doAllGraphs, 'cron', minute=minuteCron )
