@@ -166,14 +166,17 @@ def readWXLINKData(password):
 
         print "writing SQLdata ";
 
-	# get last record read
-	query = "SELECT MessageID FROM "+WXLINKtableName+" ORDER BY id DESC LIMIT 1"
-        cur.execute(query)	
+	try:
+		# get last record read
+		query = "SELECT MessageID FROM "+WXLINKtableName+" ORDER BY id DESC LIMIT 1"
+        	cur.execute(query)	
 
-	results = cur.fetchone()
-	lastMessageID = results[0]
-	print "lastMessageID =", lastMessageID
-
+		results = cur.fetchone()
+		lastMessageID = results[0]
+		print "lastMessageID =", lastMessageID
+	except:
+		print "No data in Database"
+		lastMessageID = -1
 
 	if (lastMessageID != messageID):
         	# write record
@@ -282,6 +285,264 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 		pylab.close()
 		gc.collect()
 		print "------WXLINKGraphTemperature finished now"
+
+def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
+    		print('buildWXLINKGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+
+		# open database
+		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
+		# now we have to get the data, stuff it in the graph 
+
+    		mycursor = con1.cursor()
+
+		print myGraphSampleCount
+		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, Battery_Voltage, Battery_Current, Solar_Panel_Voltage, Solar_Panel_Current,  Load_Current, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
+
+		print "query=", query
+		try:
+			mycursor.execute(query)
+			result = mycursor.fetchall()
+		except:
+			e=sys.exc_info()[0]
+			print "Error: %s" % e
+
+		
+		t = []   # time
+		u = []   # Battery_Current 
+		v = []   # Solar_Panel_Current 
+		x = []   # Load_Current 
+		averagePowerIn = 0.0
+		averagePowerOut = 0.0
+ 		currentCount = 0
+
+		for record in result:
+			t.append(record[0])
+			u.append(record[5])
+			v.append(record[7])
+			x.append(record[8])
+
+		print ("count of t=",len(t))
+
+		fds = dates.date2num(t) # converted
+		# matplotlib date format object
+		hfmt = dates.DateFormatter('%H:%M:%S')
+		#hfmt = dates.DateFormatter('%m/%d-%H')
+
+		fig = pyplot.figure()
+		fig.set_facecolor('white')
+		ax = fig.add_subplot(111,axisbg = 'white')
+		ax.vlines(fds, -200.0, 1000.0,colors='w')
+		
+		ax2 = fig.add_subplot(111,axisbg = 'white')
+
+
+		ax.xaxis.set_major_formatter(hfmt)
+		pyplot.xticks(rotation='45')
+		pyplot.subplots_adjust(bottom=.3)
+		pylab.plot(t, u, color='red',label="Battery Current (V) ",linestyle="-",marker=".")
+		pylab.plot(t, v, color='green',label="Solar Panel Current (V) ",linestyle="-",marker=".")
+		pylab.plot(t, x, color='blue',label="Load Current (V) ",linestyle="-",marker=".")
+		pylab.xlabel("Time")
+		pylab.ylabel("Current (mA)")
+		pylab.legend(loc='upper left', fontsize='x-small')
+		pylab.axis([min(t), max(t), min(u)-10, max(v) + 20])
+
+
+		pylab.figtext(.5, .05, ("Solar Current Performance WXLink\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.grid(True)
+
+		pyplot.show()
+		pyplot.savefig("/var/www/html/WXLINKDataLoggerGraphSolarCurrent.png", facecolor=fig.get_facecolor())	
+
+
+
+		mycursor.close()       	 
+		con1.close()
+
+		fig.clf()
+		pyplot.close()
+		pylab.close()
+		gc.collect()
+		print "------WXLINKGraphCurrent finished now"
+
+
+
+def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
+    		print('buildWXLINKGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+
+		# open database
+		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
+		# now we have to get the data, stuff it in the graph 
+
+    		mycursor = con1.cursor()
+
+		print myGraphSampleCount
+		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, Battery_Voltage, Battery_Current, Solar_Panel_Voltage, Solar_Panel_Current,  Load_Current, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
+
+		print "query=", query
+		try:
+			mycursor.execute(query)
+			result = mycursor.fetchall()
+		except:
+			e=sys.exc_info()[0]
+			print "Error: %s" % e
+
+		
+		t = []   # time
+		u = []   # Battery_Voltage
+		v = []   # Solar_Panel_Voltage 
+		averagePowerIn = 0.0
+		averagePowerOut = 0.0
+ 		currentCount = 0
+
+		for record in result:
+			t.append(record[0])
+			u.append(record[4])
+			v.append(record[6])
+
+		print ("count of t=",len(t))
+
+		fds = dates.date2num(t) # converted
+		# matplotlib date format object
+		hfmt = dates.DateFormatter('%H:%M:%S')
+		#hfmt = dates.DateFormatter('%m/%d-%H')
+
+		fig = pyplot.figure()
+		fig.set_facecolor('white')
+		ax = fig.add_subplot(111,axisbg = 'white')
+		ax.vlines(fds, -200.0, 1000.0,colors='w')
+		
+		ax2 = fig.add_subplot(111,axisbg = 'white')
+
+
+		ax.xaxis.set_major_formatter(hfmt)
+		pyplot.xticks(rotation='45')
+		pyplot.subplots_adjust(bottom=.3)
+		pylab.plot(t, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(t, v, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
+		pylab.xlabel("Time")
+		pylab.ylabel("Voltage (V)")
+		pylab.legend(loc='upper left', fontsize='x-small')
+		pylab.axis([min(t), max(t), 0, 7])
+
+
+		pylab.figtext(.5, .05, ("Solar Voltage Performance WXLink\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.grid(True)
+
+		pyplot.show()
+		pyplot.savefig("/var/www/html/WXLINKDataLoggerGraphSolarVoltage.png", facecolor=fig.get_facecolor())	
+
+
+
+		mycursor.close()       	 
+		con1.close()
+
+		fig.clf()
+		pyplot.close()
+		pylab.close()
+		gc.collect()
+		print "------WXLINKGraphSolarVoltage finished now"
+
+
+
+
+def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
+    		print('buildWXLINKGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+
+		# open database
+		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
+		# now we have to get the data, stuff it in the graph 
+
+    		mycursor = con1.cursor()
+
+		print myGraphSampleCount
+		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, Battery_Voltage, Battery_Current, Solar_Panel_Voltage, Solar_Panel_Current,  Load_Current, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
+
+		print "query=", query
+		try:
+			mycursor.execute(query)
+			result = mycursor.fetchall()
+		except:
+			e=sys.exc_info()[0]
+			print "Error: %s" % e
+
+		
+		t = []   # time
+		u = []   # Battery_Voltage
+		v = []   # Battery_Current
+		x = []   # Solar_Panel_Voltage 
+		y = []   # Solar_Panel_Current 
+		z = []   # Load_Current 
+
+		sp = [] # Solar Power
+		bp = [] # Battery Power
+		lp = [] # Load Power
+
+		averagePowerIn = 0.0
+		averagePowerOut = 0.0
+ 		currentCount = 0
+
+		for record in result:
+			t.append(record[0])
+			u.append(record[4])
+			v.append(record[5])
+			x.append(record[6])
+			y.append(record[7])
+			z.append(record[8])
+
+			sp.append(record[6]*record[7])
+			bp.append(record[4]*record[5])
+			lp.append(5.0*record[8])   # assume 5V nominal output
+
+			
+
+		print ("count of t=",len(t))
+
+		fds = dates.date2num(t) # converted
+		# matplotlib date format object
+		hfmt = dates.DateFormatter('%H:%M:%S')
+		#hfmt = dates.DateFormatter('%m/%d-%H')
+
+		fig = pyplot.figure()
+		fig.set_facecolor('white')
+		ax = fig.add_subplot(111,axisbg = 'white')
+		ax.vlines(fds, -200.0, 1000.0,colors='w')
+		
+		ax2 = fig.add_subplot(111,axisbg = 'white')
+
+
+		ax.xaxis.set_major_formatter(hfmt)
+		pyplot.xticks(rotation='45')
+		pyplot.subplots_adjust(bottom=.3)
+		pylab.plot(t, sp, color='green',label="Solar Power (mW) ",linestyle="-",marker=".")
+		pylab.plot(t, bp, color='red',label="Battery Power (mW) ",linestyle="-",marker=".")
+		pylab.plot(t, lp, color='black',label="Load Power (mW) ",linestyle="-",marker=".")
+		pylab.xlabel("Time")
+		pylab.ylabel("milli Watts (mW)")
+		pylab.legend(loc='upper left', fontsize='x-small')
+		fullpower = []
+		fullpower.extend(sp)
+		fullpower.extend(bp)
+		fullpower.extend(lp)
+		pylab.axis([min(t), max(t), min(fullpower)-100  , max(fullpower)+100])
+
+
+		pylab.figtext(.5, .05, ("System Power Performance WXLink\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.grid(True)
+
+		pyplot.show()
+		pyplot.savefig("/var/www/html/WXLINKDataLoggerGraphPower.png", facecolor=fig.get_facecolor())	
+
+
+
+		mycursor.close()       	 
+		con1.close()
+
+		fig.clf()
+		pyplot.close()
+		pylab.close()
+		gc.collect()
+		print "------WXLINKGraphPower finished now"
 
 
 

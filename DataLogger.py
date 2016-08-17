@@ -68,7 +68,7 @@ LengthSample = 600000
 GraphRefresh = 2.0
 #GraphRefresh = 10.0
 #How many samples to Graph
-GraphSampleCount =2880 
+GraphSampleCount = 2000 
 
 
 #mysql Password
@@ -129,9 +129,9 @@ def doAllGraphs():
 
     if WXLINK_Present:
     	WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
-    	#WXLINKFunctions.buildWXLINKGraphCurrent(password, GraphSampleCount)
-    	#WXLINKFunctions.buildWXLINKGraphVoltage(password, GraphSampleCount)
-
+    	WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarPower(password, GraphSampleCount)
 
 if __name__ == '__main__':
 
@@ -139,6 +139,8 @@ if __name__ == '__main__':
 
     WXLINKFunctions.readWXLINKData(password)
     WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
+    WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
+    WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
 
     #ThreePanelTestFunctions.readThreePanelTestData(password)
     #ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
