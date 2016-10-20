@@ -1,6 +1,8 @@
 Raspberry Pi DataLogger
 SwitchDoc Labs
 
+Version 2.0
+
 June 01, 2016: Set up to measure current using Grove INA3221 3 channel Current Measuring Breakout Board and display with MatPlotLib
 
 June 11, 2016: Set up to measure voltage using Grove ADS1115 4 Channel 16 Bit ADC Board
@@ -12,6 +14,10 @@ June 18, 2016: Installed OurWeather suppot / Fixed multiple graph generation
 June 30, 2016: Added software to measure three solar panels at once through an I2C Mux and Three SunAirPlus boards
 
 July 16, 2016: Added WXLink support (Wireless link for the WeatherRack Weather Sensors to the Raspberry Pi) 
+
+September 19, 2016:  Added OurWeather Solar Extender to the Database 
+
+October 20, 2016: Improved WXLink Error Checking
 
 
 Supports the INA3221 Grove Breakout Board or SunAirPlus on switchdoc.com

@@ -122,6 +122,8 @@ def doAllGraphs():
     if OURWEATHER_Present:
     	OURWEATHERFunctions.buildOURWEATHERGraphTemperature(password, GraphSampleCount)
     	OURWEATHERFunctions.buildOURWEATHERGraphWind(password, GraphSampleCount)
+        OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(password, GraphSampleCount)
+        OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(password, GraphSampleCount)
 
     if ThreePanelTest_Present:
     	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
@@ -136,6 +138,14 @@ def doAllGraphs():
 if __name__ == '__main__':
 
     scheduler = BackgroundScheduler()
+
+    # make sure functions work before scheduling - may remove when debugged
+
+    #OURWEATHERFunctions.readOURWEATHERData(password)
+    #OURWEATHERFunctions.buildOURWEATHERGraphTemperature(password, GraphSampleCount)
+    #OURWEATHERFunctions.buildOURWEATHERGraphWind(password, GraphSampleCount)
+    #OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(password, GraphSampleCount)
+    #OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(password, GraphSampleCount)
 
     WXLINKFunctions.readWXLINKData(password)
     WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)

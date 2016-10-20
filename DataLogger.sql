@@ -87,7 +87,13 @@ CREATE TABLE IF NOT EXISTS `OURWEATHERTable` (
   `OurWeather_DateTime` varchar(30) NOT NULL,
   `OurWeather_Station_Name` varchar(30) NOT NULL,
   `Current_Air_Quality_Sensor` int(11) NOT NULL,
-  `Current_Air_Quality_Qualitative` int(11) NOT NULL
+  `Current_Air_Quality_Qualitative` int(11) NOT NULL,
+  `Battery_Voltage` float NOT NULL,
+  `Battery_Current` float NOT NULL,
+  `Solar_Voltage` float NOT NULL,
+  `Solar_Current` float NOT NULL,
+  `Load_Voltage` float NOT NULL,
+  `Load_Current` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='OurWeather FullDataString';
 
 -- --------------------------------------------------------

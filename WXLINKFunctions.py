@@ -80,120 +80,151 @@ headers = {
 }
 
 
-
-
+import crcpython2
+# read WXLink and return list to set variables
+crcCalc = crcpython2.CRCCCITT(version='XModem')
 
 def readWXLINKData(password):
     	print('readWXLINKData - The time is: %s' % datetime.now(timezone('US/Pacific')))
 
-   	data1 = "" 
-   	data2 =  ""
-   	print "-----------"
-   	print "block 1"
-   	data1 = i2cbus.read_i2c_block_data(WXLINKaddress, 0);
-	data1 = bytearray(data1)
-   	#data1 = i2cbus.read_i2c_block_data(WXLINKaddress, 0);
-   	print ' '.join(hex(x) for x in data1) 
-   	print "block 2"
-   	data2 = i2cbus.read_i2c_block_data(WXLINKaddress, 1);
-	data2 = bytearray(data2)
-   	#data2 = i2cbus.read_i2c_block_data(WXLINKaddress, 1);
-   	print ' '.join(hex(x) for x in data2) 
-   	print "-----------"
+   	try:
+		data1 = "" 
+   		data2 =  ""
+   		print "-----------"
+   		print "block 1"
+   		data1 = i2cbus.read_i2c_block_data(WXLINKaddress, 0);
+		data1 = bytearray(data1)
+   		#data1 = i2cbus.read_i2c_block_data(WXLINKaddress, 0);
+   		print ' '.join(hex(x) for x in data1) 
+   		print "block 2"
+   		data2 = i2cbus.read_i2c_block_data(WXLINKaddress, 1);
+		data2 = bytearray(data2)
+   		#data2 = i2cbus.read_i2c_block_data(WXLINKaddress, 1);
+   		print ' '.join(hex(x) for x in data2) 
+   		print "-----------"
+
+
+
+                if ((len(data1) == 0) or (len(data2) == 0)):
+			print "zero length WXLink Read"
+			return   # bad read
+
+
+                # check crc for errors - don't update data if crc is bad
+
+                #get crc from data
+                receivedCRC = unpack('H', str(data2[29:31]))[0]
+                #swap bytes for recievedCRC
+                receivedCRC = (((receivedCRC)>>8) | ((receivedCRC&0xFF)<<8))&0xFFFF
+                print "ReversedreceivedCRC= %x" % receivedCRC
+
+                calculatedCRC = crcCalc.calculate(data1+data2[0:27])
+
+                print "calculatedCRC = %x " % calculatedCRC
+
+                # check for start bytes, if not present, then invalidate CRC
+
+                if (data1[0] != 0xAB) or (data1[1] != 0x66):
+                       calculatedCRC = receivedCRC + 1
+
+
+		if (receivedCRC == calculatedCRC):
+                        print "Good CRC Recived"
+
+			#data1
 	
-	#data1
-
-	print len(data1)
-	header0 = data1[0]
-	header1 = data1[1]
-	protocol = data1[2]
-	timeSinceReboot = unpack('i',str(data1[3:7]))[0]
-	windDirection = unpack('H', str(data1[7:9]))[0]
-	averageWindSpeed = unpack('f', str(data1[9:13]))[0]
-	windClicks = unpack('l', str(data1[13:17]))[0]
-	totalRainClicks = unpack('l', str(data1[17:21]))[0]
-	maximumWindGust = unpack('f', str(data1[21:25]))[0]
-	outsideTemperature = unpack('f', str(data1[25:29]))[0]
-	elements = [data1[29], data1[30], data1[31], data2[0]]
-	outHByte = bytearray(elements)
-	outsideHumidity = unpack('f', str(outHByte))[0]
-
-	# data2
-
-	batteryVoltage = unpack('f', str(data2[1:5]))[0]
-	batteryCurrent = unpack('f', str(data2[5:9]))[0]
-	loadCurrent = unpack('f', str(data2[9:13]))[0]
-	solarPanelVoltage = unpack('f', str(data2[13:17]))[0]
-	solarPanelCurrent = unpack('f', str(data2[17:21]))[0]
+			print len(data1)
+			header0 = data1[0]
+			header1 = data1[1]
+			protocol = data1[2]
+			timeSinceReboot = unpack('i',str(data1[3:7]))[0]
+			windDirection = unpack('H', str(data1[7:9]))[0]
+			averageWindSpeed = unpack('f', str(data1[9:13]))[0]
+			windClicks = unpack('l', str(data1[13:17]))[0]
+			totalRainClicks = unpack('l', str(data1[17:21]))[0]
+			maximumWindGust = unpack('f', str(data1[21:25]))[0]
+			outsideTemperature = unpack('f', str(data1[25:29]))[0]
+			elements = [data1[29], data1[30], data1[31], data2[0]]
+			outHByte = bytearray(elements)
+			outsideHumidity = unpack('f', str(outHByte))[0]
 	
-	auxA = unpack('f', str(data2[21:25]))[0]
-	messageID = unpack('l', str(data2[25:29]))[0]
-	checksumLow = data2[29]
-	checksumHigh = data2[30]
+			# data2
+		
+			batteryVoltage = unpack('f', str(data2[1:5]))[0]
+			batteryCurrent = unpack('f', str(data2[5:9]))[0]
+			loadCurrent = unpack('f', str(data2[9:13]))[0]
+			solarPanelVoltage = unpack('f', str(data2[13:17]))[0]
+			solarPanelCurrent = unpack('f', str(data2[17:21]))[0]
+	
+			auxA = unpack('f', str(data2[21:25]))[0]
+			messageID = unpack('l', str(data2[25:29]))[0]
+			checksumLow = data2[29]
+			checksumHigh = data2[30]
 
 
-	print "header = %x %x" % (header0, header1)
-	print "protocol = %d" % (protocol )
-	print "timeSinceReboot = %d" % timeSinceReboot
-	print "windDirection = %d" % windDirection
-	print "averageWindSpeed = %6.2f" % averageWindSpeed
-	print "windClicks = %d" % windClicks
-	print "totalRainClicks = %d" % totalRainClicks
-	print "maximumWindGust = %6.2f" % maximumWindGust
-	print "outsideTemperature = %6.2f" % outsideTemperature
-	print "outsideHumidity = %6.2f" % outsideHumidity
-
-	# data 2
-
-	print "batteryVoltage = %6.2f" % batteryVoltage
-	print "batteryCurrent = %6.2f" % batteryCurrent
-	print "loadCurrent = %6.2f" % loadCurrent
-	print "solarPanelVoltage = %6.2f" % solarPanelVoltage
-	print "solarPanelCurrent = %6.2f" % solarPanelCurrent
-	print "auxA = %6.2f" % auxA
-	print "messageID = %d" % (messageID )
-	print "checksumHigh =0x%x" % (checksumHigh )
-	print "checksumLow =0x%x" % (checksumLow )
-
-	# open database
-	con = mdb.connect('localhost', 'root', password, 'DataLogger' )
-	cur = con.cursor()
-
-	#
-	# Now put the data in MySQL
-	# 
-        # Put record in MySQL
-
-        print "writing SQLdata ";
-
-	try:
-		# get last record read
-		query = "SELECT MessageID FROM "+WXLINKtableName+" ORDER BY id DESC LIMIT 1"
-        	cur.execute(query)	
-
-		results = cur.fetchone()
-		lastMessageID = results[0]
-		print "lastMessageID =", lastMessageID
+			print "header = %x %x" % (header0, header1)
+			print "protocol = %d" % (protocol )
+			print "timeSinceReboot = %d" % timeSinceReboot
+			print "windDirection = %d" % windDirection
+			print "averageWindSpeed = %6.2f" % averageWindSpeed
+			print "windClicks = %d" % windClicks
+			print "totalRainClicks = %d" % totalRainClicks
+			print "maximumWindGust = %6.2f" % maximumWindGust
+			print "outsideTemperature = %6.2f" % outsideTemperature
+			print "outsideHumidity = %6.2f" % outsideHumidity
+	
+			# data 2
+		
+			print "batteryVoltage = %6.2f" % batteryVoltage
+			print "batteryCurrent = %6.2f" % batteryCurrent
+			print "loadCurrent = %6.2f" % loadCurrent
+			print "solarPanelVoltage = %6.2f" % solarPanelVoltage
+			print "solarPanelCurrent = %6.2f" % solarPanelCurrent
+			print "auxA = %6.2f" % auxA
+			print "messageID = %d" % (messageID )
+			print "checksumHigh =0x%x" % (checksumHigh )
+			print "checksumLow =0x%x" % (checksumLow )
+	
+			# open database
+			con = mdb.connect('localhost', 'root', password, 'DataLogger' )
+			cur = con.cursor()
+		
+			#
+			# Now put the data in MySQL
+			# 
+        		# Put record in MySQL
+	
+        		print "writing SQLdata ";
+		
+			try:
+				# get last record read
+				query = "SELECT MessageID FROM "+WXLINKtableName+" ORDER BY id DESC LIMIT 1"
+        			cur.execute(query)	
+		
+				results = cur.fetchone()
+				lastMessageID = results[0]
+				print "lastMessageID =", lastMessageID
+			except:
+				print "No data in Database"
+				lastMessageID = -1
+		
+			if (lastMessageID != messageID):
+        			# write record
+        			deviceid = 0
+        			query = 'INSERT INTO '+WXLINKtableName+(' (TimeStamp , deviceid , Protocol, Outdoor_Temperature , Outdoor_Humidity , Indoor_Temperature , Barometric_Pressure , Current_Wind_Speed , Current_Wind_Clicks , Current_Wind_Direction , Rain_Total_Clicks , Battery_Voltage , Battery_Current , Load_Current , Solar_Panel_Voltage , Solar_Panel_Current , MessageID , Time_Since_Reboot , AuxA) VALUES(CONVERT_TZ(UTC_TIMESTAMP(),"+00:00","-07:00"), %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %.3f)' % (0, protocol, outsideTemperature, outsideHumidity, 0, 0, averageWindSpeed , windClicks, windDirection, totalRainClicks, batteryVoltage, batteryCurrent, loadCurrent, solarPanelVoltage, solarPanelCurrent,  messageID, timeSinceReboot, auxA)) 
+		
+		
+       		 
+				print("query=%s" % query)
+		
+        			cur.execute(query)	
+		
+			con.commit()
 	except:
-		print "No data in Database"
-		lastMessageID = -1
-
-	if (lastMessageID != messageID):
-        	# write record
-        	deviceid = 0
-        	query = 'INSERT INTO '+WXLINKtableName+(' (TimeStamp , deviceid , Protocol, Outdoor_Temperature , Outdoor_Humidity , Indoor_Temperature , Barometric_Pressure , Current_Wind_Speed , Current_Wind_Clicks , Current_Wind_Direction , Rain_Total_Clicks , Battery_Voltage , Battery_Current , Load_Current , Solar_Panel_Voltage , Solar_Panel_Current , MessageID , Time_Since_Reboot , AuxA) VALUES(CONVERT_TZ(UTC_TIMESTAMP(),"+00:00","-07:00"), %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %.3f)' % (0, protocol, outsideTemperature, outsideHumidity, 0, 0, averageWindSpeed , windClicks, windDirection, totalRainClicks, batteryVoltage, batteryCurrent, loadCurrent, solarPanelVoltage, solarPanelCurrent,  messageID, timeSinceReboot, auxA)) 
-
-
-        
-		print("query=%s" % query)
-
-        	cur.execute(query)	
-
-	con.commit()
-
-
-
-
+		print "Error in reading WXLINK"	
+		print sys.exc_info()[0]	
+	
+	
 # WXLINK graph building routine
 
 

@@ -18,6 +18,7 @@ import pylab
 
 import sys
 
+from pytz import timezone
 
 import httplib2 as http
 import json
@@ -35,7 +36,7 @@ import MySQLdb as mdb
 OURWEATHERtableName = 'OURWEATHERTable'
 
 # set up your OurWeather IP Address here
-uri = 'http://192.168.1.140/FullDataString'
+uri = 'http://192.168.1.147/FullDataString'
 path = '/'
 
 # fetch the JSON data from the OurWeather device
@@ -74,7 +75,10 @@ headers = {
 def readOURWEATHERData(password):
     	print('readOURWEATHERData - The time is: %s' % datetime.now())
 
-	data = fetchJSONData(uri, path)
+	try:
+		data = fetchJSONData(uri, path)
+	except:
+		print "-----Can't read from OurWeather"
 
 
 	# pre split weather data
@@ -107,7 +111,7 @@ def readOURWEATHERData(password):
 
         # write record
         deviceid = 0
-        query = 'INSERT INTO '+OURWEATHERtableName+('(timestamp, deviceid, Outdoor_Temperature , Outdoor_Humidity , Indoor_Temperature , Barometric_Pressure , Altitude , Current_Wind_Speed , Current_Wind_Gust , Current_Wind_Direction , Rain_Total , Wind_Speed_Minimum , Wind_Speed_Maximum , Wind_Gust_Minimum , Wind_Gust_Maximum , Wind_Direction_Minimum , Wind_Direction_Maximum , Display_English_Metrice , OurWeather_DateTime , OurWeather_Station_Name , Current_Air_Quality_Sensor , Current_Air_Quality_Qualitative ) VALUES(UTC_TIMESTAMP(),  %i, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %i, "%s" , "%s", %i, %i)' % ( int(data['id']), float(WData[0]), float(WData[1]), float(WData[2]), float(WData[3]), float(WData[4]), float(WData[5]), float(WData[6]), float(WData[7]), float(WData[8]), float(WData[9]), float(WData[10]), float(WData[11]), float(WData[12]), float(WData[13]), float(WData[14]), int(WData[15]), WData[16], WData[17], int(WData[18]), int(WData[19])) ) 
+        query = 'INSERT INTO '+OURWEATHERtableName+('(timestamp, deviceid, Outdoor_Temperature , Outdoor_Humidity , Indoor_Temperature , Barometric_Pressure , Altitude , Current_Wind_Speed , Current_Wind_Gust , Current_Wind_Direction , Rain_Total , Wind_Speed_Minimum , Wind_Speed_Maximum , Wind_Gust_Minimum , Wind_Gust_Maximum , Wind_Direction_Minimum , Wind_Direction_Maximum , Display_English_Metrice , OurWeather_DateTime , OurWeather_Station_Name , Current_Air_Quality_Sensor , Current_Air_Quality_Qualitative, Battery_Voltage, Battery_Current, Solar_Voltage, Solar_Current, Load_Voltage, Load_Current ) VALUES(UTC_TIMESTAMP(),  %i, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %i, "%s" , "%s", %i, %i,%.3f, %.3f, %.3f,%.3f,%.3f,%.3f)' % ( int(data['id']), float(WData[0]), float(WData[1]), float(WData[2]), float(WData[3]), float(WData[4]), float(WData[5]), float(WData[6]), float(WData[7]), float(WData[8]), float(WData[9]), float(WData[10]), float(WData[11]), float(WData[12]), float(WData[13]), float(WData[14]), int(WData[15]), WData[16], WData[17], int(WData[18]), int(WData[19]), float(WData[20]), float(WData[21]), float(WData[22]), float(WData[23]), float(WData[24]), float(WData[25])) ) 
         
 	print("query=%s" % query)
 
@@ -133,7 +137,7 @@ def buildOURWEATHERGraphTemperature(password, myGraphSampleCount):
     		mycursor = con1.cursor()
 
 		print myGraphSampleCount
-		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, OurWeather_Station_Name, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
+		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, Outdoor_Humidity, OurWeather_Station_Name, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
 		print "query=", query
 		try:
@@ -287,6 +291,169 @@ def buildOURWEATHERGraphWind(password, myGraphSampleCount):
 		pylab.close()
 		gc.collect()
 		print "------OURWEATHERGraphWind finished now"
+
+
+
+def buildOURWEATHERGraphSolarCurrent(password, myGraphSampleCount):
+    		print('buildOURWEATHERGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+
+		# open database
+		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
+		# now we have to get the data, stuff it in the graph 
+
+    		mycursor = con1.cursor()
+
+		print myGraphSampleCount
+		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, Outdoor_Humidity, Battery_Voltage, Battery_Current, Solar_Voltage, Solar_Current,  Load_Current, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
+
+		print "query=", query
+		try:
+			mycursor.execute(query)
+			result = mycursor.fetchall()
+		except:
+			e=sys.exc_info()[0]
+			print "Error: %s" % e
+
+		
+		t = []   # time
+		u = []   # Battery_Current 
+		v = []   # Solar_Current 
+		x = []   # Load_Current 
+		averagePowerIn = 0.0
+		averagePowerOut = 0.0
+ 		currentCount = 0
+
+		for record in result:
+			t.append(record[0])
+			u.append(record[5])
+			v.append(record[7])
+			x.append(record[8])
+
+		print ("count of t=",len(t))
+
+		fds = dates.date2num(t) # converted
+		# matplotlib date format object
+		hfmt = dates.DateFormatter('%H:%M:%S')
+		#hfmt = dates.DateFormatter('%m/%d-%H')
+
+		fig = pyplot.figure()
+		fig.set_facecolor('white')
+		ax = fig.add_subplot(111,axisbg = 'white')
+		ax.vlines(fds, -200.0, 1000.0,colors='w')
+		
+		ax2 = fig.add_subplot(111,axisbg = 'white')
+
+
+		ax.xaxis.set_major_formatter(hfmt)
+		pyplot.xticks(rotation='45')
+		pyplot.subplots_adjust(bottom=.3)
+		pylab.plot(t, u, color='red',label="Battery Current (mA) ",linestyle="-",marker=".")
+		pylab.plot(t, v, color='green',label="Solar Current (mA) ",linestyle="-",marker=".")
+		pylab.plot(t, x, color='blue',label="Load Current (mA) ",linestyle="-",marker=".")
+		pylab.xlabel("Time")
+		pylab.ylabel("Current (mA)")
+		pylab.legend(loc='upper left', fontsize='x-small')
+		pylab.axis([min(t), max(t), min( min(u)-10,0), max(max(v),max(u),max(x)) + 20])
+
+
+		pylab.figtext(.5, .05, ("Solar Current Performance OurWeather\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.grid(True)
+
+		pyplot.show()
+		pyplot.savefig("/var/www/html/OURWEATHERDataLoggerGraphSolarCurrent.png", facecolor=fig.get_facecolor())	
+
+
+
+		mycursor.close()       	 
+		con1.close()
+
+		fig.clf()
+		pyplot.close()
+		pylab.close()
+		gc.collect()
+		print "------OURWEATHERGraphCurrent finished now"
+
+
+
+def buildOURWEATHERGraphSolarVoltage(password, myGraphSampleCount):
+    		print('buildOURWEATHERGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+
+		# open database
+		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
+		# now we have to get the data, stuff it in the graph 
+
+    		mycursor = con1.cursor()
+
+		print myGraphSampleCount
+		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, Outdoor_Humidity, Battery_Voltage, Battery_Current, Solar_Voltage, Solar_Current,  Load_Current, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
+
+		print "query=", query
+		try:
+			mycursor.execute(query)
+			result = mycursor.fetchall()
+		except:
+			e=sys.exc_info()[0]
+			print "Error: %s" % e
+
+		
+		t = []   # time
+		u = []   # Battery_Voltage
+		v = []   # Solar_Voltage 
+		averagePowerIn = 0.0
+		averagePowerOut = 0.0
+ 		currentCount = 0
+
+		for record in result:
+			t.append(record[0])
+			u.append(record[4])
+			v.append(record[6])
+
+		print ("count of t=",len(t))
+
+		fds = dates.date2num(t) # converted
+		# matplotlib date format object
+		hfmt = dates.DateFormatter('%H:%M:%S')
+		#hfmt = dates.DateFormatter('%m/%d-%H')
+
+		fig = pyplot.figure()
+		fig.set_facecolor('white')
+		ax = fig.add_subplot(111,axisbg = 'white')
+		ax.vlines(fds, -200.0, 1000.0,colors='w')
+		
+		ax2 = fig.add_subplot(111,axisbg = 'white')
+
+
+		ax.xaxis.set_major_formatter(hfmt)
+		pyplot.xticks(rotation='45')
+		pyplot.subplots_adjust(bottom=.3)
+		pylab.plot(t, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(t, v, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
+		pylab.xlabel("Time")
+		pylab.ylabel("Voltage (V)")
+		pylab.legend(loc='upper left', fontsize='x-small')
+		pylab.axis([min(t), max(t), 0, 7])
+
+
+		pylab.figtext(.5, .05, ("Solar Voltage Performance OurWeather\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.grid(True)
+
+		pyplot.show()
+		pyplot.savefig("/var/www/html/OURWEATHERDataLoggerGraphSolarVoltage.png", facecolor=fig.get_facecolor())	
+
+
+
+		mycursor.close()       	 
+		con1.close()
+
+		fig.clf()
+		pyplot.close()
+		pylab.close()
+		gc.collect()
+		print "------OURWEATHERGraphSolarVoltage finished now"
+
+
+
+
 
 
 ######################################
