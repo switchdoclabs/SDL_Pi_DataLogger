@@ -178,10 +178,10 @@ def buildINA3221Graph(password, myGraphSampleCount):
 
 		#ax.xaxis.set_major_locator(dates.MinuteLocator(interval=1))
 		ax.xaxis.set_major_formatter(hfmt)
-		ax.set_ylim(bottom = -200.0)
+		ax.set_ylim(bottom = 0.0)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="AirQuality Sensor Current",linestyle="-",marker=".")
+		pylab.plot(t, u, color='r',label="OurWeather Current",linestyle="-",marker=".")
 		pylab.xlabel("Seconds")
 		pylab.ylabel("Current mA")
 		pylab.legend(loc='lower center')

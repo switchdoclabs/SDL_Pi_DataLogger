@@ -16,11 +16,11 @@
 # configuration variables
 # set to true if present, false if not
 
-INA3221_Present = False
+INA3221_Present = True
 ADS1115_Present = False
 OURWEATHER_Present = False
 ThreePanelTest_Present = False
-WXLINK_Present = True
+WXLINK_Present = False
 
 # imports
 
@@ -60,15 +60,15 @@ from apscheduler.schedulers.background import BackgroundScheduler
 # constant defines
 
 #How often in seconds to sample Data
-#SampleTime = 1.0
-SampleTime = 60.0
+SampleTime = 1.0
+#SampleTime = 60.0
 #How long in seconds to sample Data
 LengthSample = 600000
 #When to generate graph (every how many minutes) 
 GraphRefresh = 2.0
 #GraphRefresh = 10.0
 #How many samples to Graph
-GraphSampleCount = 2000 
+GraphSampleCount = 7200 
 
 
 #mysql Password
@@ -147,10 +147,11 @@ if __name__ == '__main__':
     #OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(password, GraphSampleCount)
     #OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(password, GraphSampleCount)
 
-    WXLINKFunctions.readWXLINKData(password)
-    WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
-    WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
-    WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
+    if WXLINK_Present:
+    	WXLINKFunctions.readWXLINKData(password)
+    	WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
 
     #ThreePanelTestFunctions.readThreePanelTestData(password)
     #ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
