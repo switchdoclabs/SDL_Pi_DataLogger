@@ -45,11 +45,19 @@ Install the following tools and libraries:
 Installing MySQL
 MySQL - Use the following tutorial:   http://pimylifeup.com/raspberry-pi-mysql-phpmyadmin/
 
+and then install the python bindings:
+
+sudo apt-get install python-mysqldb
+
 
 Installing apscheduler 
 
 sudo pip install setuptools --upgrade
 sudo pip install apscheduler
+
+Installing Apache
+
+sudo apt-get install apache2 -y
 
 Installing MatPlotLib
 
@@ -57,11 +65,17 @@ Installing MatPlotLib
 matplotlib - Install the following packages (This will take quite a while)
 
 $ sudo apt-get install libblas-dev        ## 1-2 minutes
+
 $ sudo apt-get install liblapack-dev      ## 1-2 minutes
+
 $ sudo apt-get install python-dev        ## Optional
+
 $ sudo apt-get install libatlas-base-dev ## Optional speed up execution
+
 $ sudo apt-get install gfortran           ## 2-3 minutes
+
 $ sudo apt-get install python-setuptools  ## ?
+
 $ sudo easy_install scipy                 ## 2-3 hours
 
 $ sudo apt-get install python-matplotlib  ## 1 hour
@@ -76,23 +90,36 @@ Finally, copy DataLogger.html to /var/www/html
 
 sudo cp Datalogger.html /var/www/html
 
+and finally, set up the database:
+
+Use phpmyadmin or sql command lines to add the included SQL file to your MySQL databases.
+
+example: mysql -u root -p < DataLogger.sql
+
+user: root
+
+password: password
+
+Obviously with these credentials, don't connect port 3306 to the Internet. Change them if you aren't sure.DataL
+
 Now you can run DataLogger
 
 To Use:
 
 Change the configuration variables to support your setup:
-
+<pre>
 # configuration variables
 # set to true if present, false if not
 
 INA3221_Present = True
 ADS1115_Present = True
+</pre>
 
 To Add Devices:
 
-1) Add a configuration Variable
-2) Add device initialization code
-3) Build your custom functions file containing the read device/MySQL code and the graph building function
-4) Add your graph to the provided HTML file and copy it to /var/www/html
+1) Add a configuration Variable<BR>
+2) Add device initialization code<BR>
+3) Build your custom functions file containing the read device/MySQL code and the graph building function<BR>
+4) Add your graph to the provided HTML file and copy it to /var/www/html<BR>
 
 
