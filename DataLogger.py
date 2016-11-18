@@ -141,20 +141,24 @@ if __name__ == '__main__':
 
     # make sure functions work before scheduling - may remove when debugged
 
-    #OURWEATHERFunctions.readOURWEATHERData(password)
-    #OURWEATHERFunctions.buildOURWEATHERGraphTemperature(password, GraphSampleCount)
-    #OURWEATHERFunctions.buildOURWEATHERGraphWind(password, GraphSampleCount)
-    #OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(password, GraphSampleCount)
-    #OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(password, GraphSampleCount)
+    if OURWEATHER_Present:
+    	OURWEATHERFunctions.readOURWEATHERData(password)
+    	OURWEATHERFunctions.buildOURWEATHERGraphTemperature(password, GraphSampleCount)
+    	OURWEATHERFunctions.buildOURWEATHERGraphWind(password, GraphSampleCount)
+    	OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(password, GraphSampleCount)
+    	OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(password, GraphSampleCount)
 
-    WXLINKFunctions.readWXLINKData(password)
-    WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
-    WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
-    WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
+    if WXLINK_Present:
+    	WXLINKFunctions.readWXLINKData(password)
+    	WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarPower(password, GraphSampleCount)
 
-    #ThreePanelTestFunctions.readThreePanelTestData(password)
-    #ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
-    #ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
+    if ThreePanelTest_Present:
+    	ThreePanelTestFunctions.readThreePanelTestData(password)
+    	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
+    	ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
 
     if INA3221_Present:
 	scheduler.add_job(INA3221Functions.readINA3221Data, 'interval', seconds=SampleTime, args=[password])

@@ -211,7 +211,9 @@ def readWXLINKData(password):
 			if (lastMessageID != messageID):
         			# write record
         			deviceid = 0
-        			query = 'INSERT INTO '+WXLINKtableName+(' (TimeStamp , deviceid , Protocol, Outdoor_Temperature , Outdoor_Humidity , Indoor_Temperature , Barometric_Pressure , Current_Wind_Speed , Current_Wind_Clicks , Current_Wind_Direction , Rain_Total_Clicks , Battery_Voltage , Battery_Current , Load_Current , Solar_Panel_Voltage , Solar_Panel_Current , MessageID , Time_Since_Reboot , AuxA) VALUES(CONVERT_TZ(UTC_TIMESTAMP(),"+00:00","-07:00"), %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %.3f)' % (0, protocol, outsideTemperature, outsideHumidity, 0, 0, averageWindSpeed , windClicks, windDirection, totalRainClicks, batteryVoltage, batteryCurrent, loadCurrent, solarPanelVoltage, solarPanelCurrent,  messageID, timeSinceReboot, auxA)) 
+
+				myTimeStamp = datetime.now(timezone('US/Pacific'))
+        			query = 'INSERT INTO '+WXLINKtableName+(' (TimeStamp , deviceid , Protocol, Outdoor_Temperature , Outdoor_Humidity , Indoor_Temperature , Barometric_Pressure , Current_Wind_Speed , Current_Wind_Clicks , Current_Wind_Direction , Rain_Total_Clicks , Battery_Voltage , Battery_Current , Load_Current , Solar_Panel_Voltage , Solar_Panel_Current , MessageID , Time_Since_Reboot , AuxA) VALUES("%s", %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %i, %.3f, %.3f, %.3f, %.3f, %.3f, %i, %i, %.3f)' % (myTimeStamp, 0, protocol, outsideTemperature, outsideHumidity, 0, 0, averageWindSpeed , windClicks, windDirection, totalRainClicks, batteryVoltage, batteryCurrent, loadCurrent, solarPanelVoltage, solarPanelCurrent,  messageID, timeSinceReboot, auxA)) 
 		
 		
        		 
@@ -269,6 +271,8 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 
 		print ("count of t=",len(t))
 
+		lastSampleTime = t[-1]
+
 		fds = dates.date2num(t) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
@@ -300,7 +304,7 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 		pylab.axis([min(t), max(t), -60, 80])
 		pylab.legend(loc='lower left', fontsize='x-small')
 
-		pylab.figtext(.5, .05, ("Solar Performance WXLink\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.figtext(.5, .01, ("Solar Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime ),fontsize=18,ha='center')
 		pylab.grid(True)
 
 		pyplot.show()
@@ -318,7 +322,7 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 		print "------WXLINKGraphTemperature finished now"
 
 def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
-    		print('buildWXLINKGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+    		print('buildWXLINKGraphSolarCurrent - The time is: %s' % datetime.now(timezone('US/Pacific')))
 
 		# open database
 		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
@@ -354,6 +358,8 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 
 		print ("count of t=",len(t))
 
+		lastSampleTime = t[-1]
+
 		fds = dates.date2num(t) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
@@ -378,8 +384,8 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 		pylab.legend(loc='upper left', fontsize='x-small')
 		pylab.axis([min(t), max(t), min(u)-10, max(v) + 20])
 
-
-		pylab.figtext(.5, .05, ("Solar Current Performance WXLink\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		
+		pylab.figtext(.5, 0.01, ("Solar Current Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime ),fontsize=18,ha='center')
 		pylab.grid(True)
 
 		pyplot.show()
@@ -399,7 +405,7 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 
 
 def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
-    		print('buildWXLINKGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+    		print('buildWXLINKGraphSolarVoltage - The time is: %s' % datetime.now(timezone('US/Pacific')))
 
 		# open database
 		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
@@ -433,6 +439,8 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 
 		print ("count of t=",len(t))
 
+		lastSampleTime = t[-1]
+
 		fds = dates.date2num(t) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
@@ -457,7 +465,7 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 		pylab.axis([min(t), max(t), 0, 7])
 
 
-		pylab.figtext(.5, .05, ("Solar Voltage Performance WXLink\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.figtext(.5, .01, ("Solar Voltage Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime),fontsize=18,ha='center')
 		pylab.grid(True)
 
 		pyplot.show()
@@ -478,7 +486,7 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 
 
 def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
-    		print('buildWXLINKGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
+    		print('buildWXLINKGraphSolarPower - The time is: %s' % datetime.now(timezone('US/Pacific')))
 
 		# open database
 		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
@@ -529,6 +537,8 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 
 		print ("count of t=",len(t))
 
+		lastSampleTime = t[-1]
+
 		fds = dates.date2num(t) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
@@ -558,7 +568,7 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 		pylab.axis([min(t), max(t), min(fullpower)-100  , max(fullpower)+100])
 
 
-		pylab.figtext(.5, .05, ("System Power Performance WXLink\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
+		pylab.figtext(.5, .01, ("System Power Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime),fontsize=18,ha='center')
 		pylab.grid(True)
 
 		pyplot.show()
@@ -576,171 +586,6 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 		print "------WXLINKGraphPower finished now"
 
 
-
-def buildWXLINKGraphTemperature(password, myGraphSampleCount):
-    		print('buildWXLINKGraph - The time is: %s' % datetime.now(timezone('US/Pacific')))
-
-		# open database
-		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
-		# now we have to get the data, stuff it in the graph 
-
-    		mycursor = con1.cursor()
-
-		print myGraphSampleCount
-		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, OurWeather_Station_Name, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
-
-		print "query=", query
-		try:
-			mycursor.execute(query)
-			result = mycursor.fetchall()
-		except:
-			e=sys.exc_info()[0]
-			print "Error: %s" % e
-
-
-		t = []   # time
-		u = []   # Outdoor temperature
-		v = []   # Outdoor humidity
-		averageTemperature = 0.0
- 		currentCount = 0
-
-		for record in result:
-			t.append(record[0])
-			u.append(record[2])
-			v.append(record[3])
-			averageTemperature = averageTemperature+record[2]
-			currentCount=currentCount+1
-			StationName = record[4]
-
-		averageTemperature = averageTemperature/currentCount
-		
-		print ("count of t=",len(t))
-
-		fds = dates.date2num(t) # converted
-		# matplotlib date format object
-		hfmt = dates.DateFormatter('%H:%M:%S')
-		#hfmt = dates.DateFormatter('%m/%d-%H')
-
-		fig = pyplot.figure()
-		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
-		ax.vlines(fds, -200.0, 1000.0,colors='w')
-		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
-
-
-
-		ax.xaxis.set_major_formatter(hfmt)
-		pyplot.xticks(rotation='45')
-		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="Outside Temp (C) ",linestyle="-",marker=".")
-		pylab.xlabel("Time")
-		pylab.ylabel("degrees C")
-		pylab.legend(loc='upper left')
-		pylab.axis([min(t), max(t), -20, 50])
-
-		ax2 = pylab.twinx()
-		pylab.ylabel("% ")
-		pylab.plot(t, v, color='b',label="Outside Hum %",linestyle="-",marker=".")
-		pylab.axis([min(t), max(t), 0, 100])
-		pylab.legend(loc='lower left')
-		pylab.figtext(.5, .05, ("%s Average Temperature %6.2f\n%s") %( StationName, averageTemperature, datetime.now(timezone('US/Pacific'))),fontsize=18,ha='center')
-		pylab.grid(True)
-
-		pyplot.show()
-		pyplot.savefig("/var/www/html/WXLINKDataLoggerGraphTemperature.png", facecolor=fig.get_facecolor())	
-
-
-
-		mycursor.close()       	 
-		con1.close()
-
-		fig.clf()
-		pyplot.close()
-		pylab.close()
-		gc.collect()
-		print "------WXLINKGraphTemperature finished now"
-
-
-def buildWXLINKGraphWind(password, myGraphSampleCount):
-    		print('buildWXLINKGraph - The time is: %s' % datetime.now(timezone('US/Pacific')))
-
-		# open database
-		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
-		# now we have to get the data, stuff it in the graph 
-
-    		mycursor = con1.cursor()
-
-		print myGraphSampleCount
-		query = '(SELECT timestamp, deviceid, Current_Wind_Speed, Current_Wind_Gust, OurWeather_Station_Name, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
-
-		print "query=", query
-		try:
-			mycursor.execute(query)
-			result = mycursor.fetchall()
-		except:
-			e=sys.exc_info()[0]
-			print "Error: %s" % e
-
-
-		t = []   # time
-		u = []   # Current Wind Speed
-		v = []   # Current Wind Gust 
-		averageWindSpeed = 0.0
- 		currentCount = 0
-
-		for record in result:
-			t.append(record[0])
-			u.append(record[2])
-			#v.append(record[3])
-			averageWindSpeed = averageWindSpeed+record[2]
-			currentCount=currentCount+1
-			StationName = record[4]
-
-		averageWindSpeed = averageWindSpeed/currentCount
-		
-		print ("count of t=",len(t))
-
-		fds = dates.date2num(t) # converted
-		# matplotlib date format object
-		hfmt = dates.DateFormatter('%H:%M:%S')
-		#hfmt = dates.DateFormatter('%m/%d-%H')
-
-		fig = pyplot.figure()
-		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
-		ax.vlines(fds, -200.0, 1000.0,colors='w')
-
-
-
-		#ax.xaxis.set_major_locator(dates.MinuteLocator(interval=1))
-		ax.xaxis.set_major_formatter(hfmt)
-		ax.set_ylim(bottom = -200.0)
-		pyplot.xticks(rotation='45')
-		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="Wind Speed (kph)" ,linestyle="o",marker=".")
-		#pylab.plot(t, v, color='b',label="Wind Gust (kph)" ,linestyle="o",marker=".")
-		pylab.xlabel("Time")
-		pylab.ylabel("Wind (kph)")
-		pylab.legend(loc='lower center')
-		pylab.axis([min(t), max(t), min(u)-20, max(u)+20])
-		pylab.figtext(.5, .05, ("%s Average Windspeed %6.2f\n%s") %( StationName, averageWindSpeed, datetime.now(timezone('US/Pacific'))),fontsize=18,ha='center')
-
-		pylab.grid(True)
-
-		pyplot.show()
-		pyplot.savefig("/var/www/html/WXLINKDataLoggerGraphWind.png", facecolor=fig.get_facecolor())	
-
-
-
-		mycursor.close()       	 
-		con1.close()
-
-		fig.clf()
-		pyplot.close()
-		pylab.close()
-		gc.collect()
-		print "------WXLINKGraphWind finished now"
 
 
 ######################################
