@@ -68,7 +68,7 @@ def readADS1115Data(password):
 
         # write record
         deviceid = 0
-        query = 'INSERT INTO '+ADS1115tableName+('(timestamp, deviceid, channel0_voltage, channel0_raw, channel1_voltage, channel1_raw, channel2_voltage, channel2_raw, channel3_voltage, channel3_raw) VALUES(UTC_TIMESTAMP(),  %i,  %.3f, %i, %.3f, %i, %.3f, %i, %.3f, %i)' %( deviceid,  Voltage[0], rawData[0], Voltage[1], rawData[1], Voltage[2], rawData[2], Voltage[3], rawData[3] ))
+        query = 'INSERT INTO '+ADS1115tableName+('(timestamp, deviceid, channel0_voltage, channel0_raw, channel1_voltage, channel1_raw, channel2_voltage, channel2_raw, channel3_voltage, channel3_raw) VALUES(CURRENT_TIMESTAMP(),  %i,  %.3f, %i, %.3f, %i, %.3f, %i, %.3f, %i)' %( deviceid,  Voltage[0], rawData[0], Voltage[1], rawData[1], Voltage[2], rawData[2], Voltage[3], rawData[3] ))
         print("query=%s" % query)
 
         cur.execute(query)	
@@ -83,8 +83,8 @@ def readADS1115Data(password):
 
 
 
-def buildADS1115Graph(password, myGraphSampleCount):
-    		print('buildADS1115Graph - The time is: %s' % datetime.now())
+def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
+    		print('buildADS1115Graph%d - The time is: %s' % (graphNumber, datetime.now()))
 
 		# open database
 		con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
@@ -111,8 +111,30 @@ def buildADS1115Graph(password, myGraphSampleCount):
  		currentCount = 0
 		for record in result:
 			t.append(record[0])
-			u.append(record[3])
-			averageCurrent = averageCurrent+record[3]
+
+			# adjust according to graphNumber
+			if (graphNumber == 0):
+				addValue = record[graphNumber*2+3] 
+
+			if (graphNumber == 1):
+        			# O2 Sensor
+        			sensorVoltage = record[graphNumber*2+2]*(5.0/6.144)
+        			AMP  = 121
+        			K_O2  = 7.43
+        			sensorVoltage = sensorVoltage/AMP*10000.0
+        			Value_O2 = sensorVoltage/K_O2
+				addValue =  Value_O2
+
+			if (graphNumber == 2):
+				addValue = record[graphNumber*2+2] 
+
+			if (graphNumber == 3):
+				addValue = record[graphNumber*2+2] 
+
+
+			u.append(addValue)
+		
+			averageCurrent = averageCurrent+addValue
 			currentCount=currentCount+1
 
 		averageCurrent = averageCurrent/currentCount
@@ -133,20 +155,66 @@ def buildADS1115Graph(password, myGraphSampleCount):
 
 		#ax.xaxis.set_major_locator(dates.MinuteLocator(interval=1))
 		ax.xaxis.set_major_formatter(hfmt)
-		ax.set_ylim(bottom = -200.0)
-		pyplot.xticks(rotation='45')
-		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="Air Quality Sensor",linestyle="-",marker=".")
+		if (graphNumber == 0):
+			ax.set_ylim(bottom = 0.0)
+			pyplot.xticks(rotation='45')
+			pyplot.subplots_adjust(bottom=.3)
+			pylab.plot(t, u, color='r',label="Air Quality Sensor",linestyle="-",marker=".")
+
+		if (graphNumber == 1):
+			ax.set_ylim(bottom = 0.0)
+			pyplot.xticks(rotation='45')
+			pyplot.subplots_adjust(bottom=.3)
+			pylab.plot(t, u, color='r',label="Oxygen (O2) Sensor ",linestyle="-",marker=".")
+
+		if (graphNumber == 2):
+			ax.set_ylim(bottom = 0.0)
+			pyplot.xticks(rotation='45')
+			pyplot.subplots_adjust(bottom=.3)
+			pylab.plot(t, u, color='r',label="Light Sensor",linestyle="-",marker=".")
+
+		if (graphNumber == 3):
+			ax.set_ylim(bottom = -200.0)
+			pyplot.xticks(rotation='45')
+			pyplot.subplots_adjust(bottom=.3)
+			pylab.plot(t, u, color='r',label="Voltage Divider ",linestyle="-",marker=".")
+
 		pylab.xlabel("Seconds")
-		pylab.ylabel("Raw Data")
+
 		pylab.legend(loc='lower center')
-		pylab.axis([min(t), max(t), min(u)-20, max(u)+20])
-		pylab.figtext(.5, .05, ("Average Air Quality %6.2f\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
+		if (graphNumber == 0):
+			pylab.axis([min(t), max(t), 0, max(u)+1000])
+			pylab.ylabel("Raw Data")
+
+		if (graphNumber == 1):
+			pylab.axis([min(t), max(t), 0, max(u)+2])
+			pylab.ylabel("Percent (%)")
+
+		if (graphNumber == 2):
+			pylab.axis([min(t), max(t), 0, max(u)+2])
+			pylab.ylabel("Voltage (V)")
+
+		if (graphNumber == 3):
+			pylab.axis([min(t), max(t), 0, max(u)+2])
+			pylab.ylabel("Voltage Divider (V)")
+
+
+		if (graphNumber == 0):
+			pylab.figtext(.5, .05, ("Average Air Quality %6.2f\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
+
+		if (graphNumber == 1):
+			pylab.figtext(.5, .05, ("Average O2 %6.2f %%\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
+
+		if (graphNumber == 2):
+			pylab.figtext(.5, .05, ("Average Light Sensor %6.2f V\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
+
+		if (graphNumber == 3):
+			pylab.figtext(.5, .05, ("Average Air Quality3 %6.2f V\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
 
 		pylab.grid(True)
 
 		pyplot.show()
-		pyplot.savefig("/var/www/html/ADS1115DataLoggerGraph.png", facecolor=fig.get_facecolor())	
+		pyplot.savefig("/var/www/html/ADS1115DataLoggerGraph"+str(graphNumber)+".png", facecolor=fig.get_facecolor())	
 
 
 
@@ -157,7 +225,7 @@ def buildADS1115Graph(password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------ADS1115Graph finished now"
+		print "------ADS1115Graph"+str(graphNumber)+" finished now"
 
 
 ######################################

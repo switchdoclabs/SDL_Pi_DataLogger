@@ -19,6 +19,8 @@ September 19, 2016:  Added OurWeather Solar Extender to the Database
 
 October 20, 2016: Improved WXLink Error Checking
 
+December 29, 2016:  Added additional graphs for ADS1115 display
+
 
 Supports the INA3221 Grove Breakout Board or SunAirPlus on switchdoc.com
 Supports the ADS1115 Grove Breakout Board on switchdoc.com
@@ -31,7 +33,7 @@ INA3221 - https://store.switchdoc.com/ina3221-breakout-board-3-channel-current-v
 ADS1115 - http://store.switchdoc.com/grove-4-channel-16-bit-analog-to-digital-converter/
 OurWeather - http://store.switchdoc.com/ourweather-complete-weather-kit/ 
 Grove 4 CHannel I2C Mux - http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/
-WXLink - not released as of July 16, 2016
+WXLink - http://store.switchdoc.com/wxlink-wireless-data-link-designed-for-the-weatherrack-and-the-weatherboard/
 
 
 See the blog posting on www.switchdoc.com about setting up the DataLogger:
@@ -88,7 +90,7 @@ sudo apt-get install python-httplib2
 
 Finally, copy DataLogger.html to /var/www/html
 
-sudo cp Datalogger.html /var/www/html
+sudo cp DataLogger.html /var/www/html
 
 and finally, set up the database:
 
@@ -100,7 +102,7 @@ user: root
 
 password: password
 
-Obviously with these credentials, don't connect port 3306 to the Internet. Change them if you aren't sure.DataL
+Obviously with these credentials, don't connect port 3306 to the Internet. Change them if you aren't sure.
 
 Now you can run DataLogger
 
