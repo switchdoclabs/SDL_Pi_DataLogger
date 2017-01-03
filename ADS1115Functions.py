@@ -209,7 +209,7 @@ def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
 			pylab.figtext(.5, .05, ("Average Light Sensor %6.2f V\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
 
 		if (graphNumber == 3):
-			pylab.figtext(.5, .05, ("Average Air Quality3 %6.2f V\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
+			pylab.figtext(.5, .05, ("Average Voltage Divider %6.2f V\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
 
 		pylab.grid(True)
 
