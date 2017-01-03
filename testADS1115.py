@@ -46,7 +46,7 @@ while (1):
         print"--------------------"
         voltsCh0 = adc.readADCSingleEnded(0, gain, sps) / 1000
         rawCh0 = adc.readRAW_ADCSingleEnded(0, gain, sps)
-        #print "Channel 0 =%.6fV raw=%d raw=0x%4X" % (voltsCh0, rawCh0, rawCh0)
+        print "Channel 0 =%.6fV raw=%d raw=0x%4X" % (voltsCh0, rawCh0, rawCh0)
 
         voltsCh1 = adc.readADCSingleEnded(1, gain, sps) / 1000
         rawCh1 = adc.readRAW_ADCSingleEnded(1, gain, sps)
@@ -57,11 +57,11 @@ while (1):
 	K_O2  = 7.43
     	sensorVoltage = sensorVoltage/AMP*10000.0
     	Value_O2 = sensorVoltage/K_O2
-	#print "Channel 1 =%.6fV raw=0x%4X O2 Percent=%6.2f" % (voltsCh1, rawCh1, Value_O2)
+	print "Channel 1 =%.6fV raw=0x%4X O2 Percent=%6.2f" % (voltsCh1, rawCh1, Value_O2)
 
         voltsCh2 = adc.readADCSingleEnded(2, gain, sps) / 1000
         rawCh2 = adc.readRAW_ADCSingleEnded(2, gain, sps)
-        #print "Channel 2 =%.6fV raw=0x%4X" % (voltsCh2, rawCh2)
+        print "Channel 2 =%.6fV raw=0x%4X" % (voltsCh2, rawCh2)
 
         voltsCh3 = adc.readADCSingleEnded(3, gain, sps) / 1000
         rawCh3 = adc.readRAW_ADCSingleEnded(3, gain, sps)
