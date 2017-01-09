@@ -56,7 +56,7 @@ while (1):
 	AMP  = 121
 	K_O2  = 7.43
     	sensorVoltage = sensorVoltage/AMP*10000.0
-    	Value_O2 = sensorVoltage/K_O2
+    	Value_O2 = sensorVoltage/K_O2 - 1.05
 	print "Channel 1 =%.6fV raw=0x%4X O2 Percent=%6.2f" % (voltsCh1, rawCh1, Value_O2)
 
         voltsCh2 = adc.readADCSingleEnded(2, gain, sps) / 1000

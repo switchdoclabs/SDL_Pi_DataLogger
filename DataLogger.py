@@ -66,7 +66,7 @@ SampleTime = 60.0
 #How long in seconds to sample Data
 LengthSample = 600000
 #When to generate graph (every how many minutes) 
-GraphRefresh = 2.0
+GraphRefresh = 1.00
 #GraphRefresh = 10.0
 #How many samples to Graph
 GraphSampleCount = 2000 

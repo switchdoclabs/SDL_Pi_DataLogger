@@ -123,7 +123,7 @@ def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
         			K_O2  = 7.43
         			sensorVoltage = sensorVoltage/AMP*10000.0
         			Value_O2 = sensorVoltage/K_O2
-				addValue =  Value_O2
+				addValue =  Value_O2 - 1.05
 
 			if (graphNumber == 2):
 				addValue = record[graphNumber*2+2] 

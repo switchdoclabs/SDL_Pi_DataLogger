@@ -21,6 +21,7 @@ October 20, 2016: Improved WXLink Error Checking
 
 December 29, 2016:  Added additional graphs for ADS1115 display
 
+January 7, 2017:  Calibrated scaling on O2 sensor graph
 
 Supports the INA3221 Grove Breakout Board or SunAirPlus on switchdoc.com
 Supports the ADS1115 Grove Breakout Board on switchdoc.com
