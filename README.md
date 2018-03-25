@@ -1,7 +1,9 @@
 Raspberry Pi DataLogger
 SwitchDoc Labs
 
-Version 2.0
+Version 3.0
+
+March 25, 2018: Fixed MatPlot issues related to Raspberry Stretch Release
 
 June 01, 2016: Set up to measure current using Grove INA3221 3 channel Current Measuring Breakout Board and display with MatPlotLib
 

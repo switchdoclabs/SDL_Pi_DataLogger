@@ -17,8 +17,8 @@
 # set to true if present, false if not
 
 INA3221_Present = False
-ADS1115_Present = True
-OURWEATHER_Present = False
+ADS1115_Present = False
+OURWEATHER_Present = True
 ThreePanelTest_Present = False
 WXLINK_Present = False
 

@@ -140,8 +140,9 @@ def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
 		averageCurrent = averageCurrent/currentCount
 		
 		print ("count of t=",len(t))
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -159,43 +160,43 @@ def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
 			ax.set_ylim(bottom = 0.0)
 			pyplot.xticks(rotation='45')
 			pyplot.subplots_adjust(bottom=.3)
-			pylab.plot(t, u, color='r',label="Air Quality Sensor",linestyle="-",marker=".")
+			pylab.plot(fds, u, color='r',label="Air Quality Sensor",linestyle="-",marker=".")
 
 		if (graphNumber == 1):
 			ax.set_ylim(bottom = 0.0)
 			pyplot.xticks(rotation='45')
 			pyplot.subplots_adjust(bottom=.3)
-			pylab.plot(t, u, color='r',label="Oxygen (O2) Sensor ",linestyle="-",marker=".")
+			pylab.plot(fds, u, color='r',label="Oxygen (O2) Sensor ",linestyle="-",marker=".")
 
 		if (graphNumber == 2):
 			ax.set_ylim(bottom = 0.0)
 			pyplot.xticks(rotation='45')
 			pyplot.subplots_adjust(bottom=.3)
-			pylab.plot(t, u, color='r',label="Light Sensor",linestyle="-",marker=".")
+			pylab.plot(fds, u, color='r',label="Light Sensor",linestyle="-",marker=".")
 
 		if (graphNumber == 3):
 			ax.set_ylim(bottom = -200.0)
 			pyplot.xticks(rotation='45')
 			pyplot.subplots_adjust(bottom=.3)
-			pylab.plot(t, u, color='r',label="Voltage Divider ",linestyle="-",marker=".")
+			pylab.plot(fds, u, color='r',label="Voltage Divider ",linestyle="-",marker=".")
 
 		pylab.xlabel("Seconds")
 
 		pylab.legend(loc='lower center')
 		if (graphNumber == 0):
-			pylab.axis([min(t), max(t), 0, max(u)+1000])
+			pylab.axis([min(fds), max(fds), 0, max(u)+1000])
 			pylab.ylabel("Raw Data")
 
 		if (graphNumber == 1):
-			pylab.axis([min(t), max(t), 0, max(u)+2])
+			pylab.axis([min(fds), max(fds), 0, max(u)+2])
 			pylab.ylabel("Percent (%)")
 
 		if (graphNumber == 2):
-			pylab.axis([min(t), max(t), 0, max(u)+2])
+			pylab.axis([min(fds), max(fds), 0, max(u)+2])
 			pylab.ylabel("Voltage (V)")
 
 		if (graphNumber == 3):
-			pylab.axis([min(t), max(t), 0, max(u)+2])
+			pylab.axis([min(fds), max(fds), 0, max(u)+2])
 			pylab.ylabel("Voltage Divider (V)")
 
 

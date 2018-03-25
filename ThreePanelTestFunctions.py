@@ -385,8 +385,9 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 		averageCurrent3 = averageCurrent3/currentCount
 		
 		print ("count of t=",len(t))
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -403,16 +404,16 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 		ax.set_ylim(bottom = -200.0)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="Panel 1 Current",linestyle="-",marker=".")
-		pylab.plot(t, v, color='b',label="Panel 2 Current",linestyle="-",marker=".")
-		pylab.plot(t, x, color='g',label="Panel 3 Current",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='r',label="Panel 1 Current",linestyle="-",marker=".")
+		pylab.plot(fds, v, color='b',label="Panel 2 Current",linestyle="-",marker=".")
+		pylab.plot(fds, x, color='g',label="Panel 3 Current",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Current mA")
 		pylab.legend(loc='lower center')
 		print "-----"
 		print max(u)
 		print "-----"
-		pylab.axis([min(t), max(t), 0, max(u)+20])
+		pylab.axis([min(fds), max(fds), 0, max(u)+20])
 		pylab.figtext(.5, .05, ("Ave Cur 1/2/3 %5.2fmA/%5.2fmA/%5.2fmA\n%s") %(averageCurrent1, averageCurrent2, averageCurrent3,  datetime.now()),fontsize=18,ha='center')
 
 		pylab.grid(True)
@@ -487,8 +488,9 @@ def buildThreePanelTestGraphVoltage(password, myGraphSampleCount):
 		averageCurrent3 = averageCurrent3/currentCount
 		
 		print ("count of t=",len(t))
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -505,13 +507,13 @@ def buildThreePanelTestGraphVoltage(password, myGraphSampleCount):
 		ax.set_ylim(bottom = -200.0)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="Panel 1 Voltage",linestyle="-",marker=".")
-		pylab.plot(t, v, color='b',label="Panel 2 Voltage",linestyle="-",marker=".")
-		pylab.plot(t, x, color='g',label="Panel 3 Voltage",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='r',label="Panel 1 Voltage",linestyle="-",marker=".")
+		pylab.plot(fds, v, color='b',label="Panel 2 Voltage",linestyle="-",marker=".")
+		pylab.plot(fds, x, color='g',label="Panel 3 Voltage",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Voltage V")
 		pylab.legend(loc='lower center')
-		pylab.axis([min(t), max(t), 0, 7])
+		pylab.axis([min(fds), max(fds), 0, 7])
 		pylab.figtext(.5, .05, ("Ave Power 1/2/3 %5.2fW/%5.2fW/%5.2fW\n%s") %(averageCurrent1/1000, averageCurrent2/1000, averageCurrent3/1000,  datetime.now()),fontsize=18,ha='center')
 
 		pylab.grid(True)

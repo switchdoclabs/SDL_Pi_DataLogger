@@ -36,7 +36,7 @@ import MySQLdb as mdb
 OURWEATHERtableName = 'OURWEATHERTable'
 
 # set up your OurWeather IP Address here
-uri = 'http://192.168.1.147/FullDataString'
+uri = 'http://192.168.1.133/FullDataString'
 path = '/'
 
 # fetch the JSON data from the OurWeather device
@@ -165,8 +165,10 @@ def buildOURWEATHERGraphTemperature(password, myGraphSampleCount):
 		averageTemperature = averageTemperature/currentCount
 		
 		print ("count of t=",len(t))
-
-		fds = dates.date2num(t) # converted
+		x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+	
+		fds = dates.date2num(x) # converted
+		#fds = t # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -183,16 +185,16 @@ def buildOURWEATHERGraphTemperature(password, myGraphSampleCount):
 		ax.xaxis.set_major_formatter(hfmt)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="Outside Temp (C) ",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='r',label="Outside Temp (C) ",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("degrees C")
 		pylab.legend(loc='upper left')
-		pylab.axis([min(t), max(t), -20, 50])
+		pylab.axis([min(fds), max(fds), -20, 50])
 
 		ax2 = pylab.twinx()
 		pylab.ylabel("% ")
-		pylab.plot(t, v, color='b',label="Outside Hum %",linestyle="-",marker=".")
-		pylab.axis([min(t), max(t), 0, 100])
+		pylab.plot(fds, v, color='b',label="Outside Hum %",linestyle="-",marker=".")
+		pylab.axis([min(fds), max(fds), 0, 100])
 		pylab.legend(loc='lower left')
 		pylab.figtext(.5, .05, ("%s Average Temperature %6.2f\n%s") %( StationName, averageTemperature, datetime.now()),fontsize=18,ha='center')
 		pylab.grid(True)
@@ -250,8 +252,10 @@ def buildOURWEATHERGraphWind(password, myGraphSampleCount):
 		averageWindSpeed = averageWindSpeed/currentCount
 		
 		print ("count of t=",len(t))
+		x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+	
+		fds = dates.date2num(x) # converted
 
-		fds = dates.date2num(t) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -268,12 +272,12 @@ def buildOURWEATHERGraphWind(password, myGraphSampleCount):
 		ax.set_ylim(bottom = -200.0)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="Wind Speed (kph)" ,linestyle="o",marker=".")
-		#pylab.plot(t, v, color='b',label="Wind Gust (kph)" ,linestyle="o",marker=".")
+		pylab.plot(fds, u, color='r',label="Wind Speed (kph)" ,linestyle="solid",marker=".")
+		#pylab.plot(fds, v, color='b',label="Wind Gust (kph)" ,linestyle="o",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Wind (kph)")
 		pylab.legend(loc='lower center')
-		pylab.axis([min(t), max(t), min(u)-20, max(u)+20])
+		pylab.axis([min(fds), max(fds), min(u)-20, max(u)+20])
 		pylab.figtext(.5, .05, ("%s Average Windspeed %6.2f\n%s") %( StationName, averageWindSpeed, datetime.now()),fontsize=18,ha='center')
 
 		pylab.grid(True)
@@ -330,8 +334,10 @@ def buildOURWEATHERGraphSolarCurrent(password, myGraphSampleCount):
 			x.append(record[8])
 
 		print ("count of t=",len(t))
+		x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+	
+		fds = dates.date2num(x1) # converted
 
-		fds = dates.date2num(t) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -347,13 +353,17 @@ def buildOURWEATHERGraphSolarCurrent(password, myGraphSampleCount):
 		ax.xaxis.set_major_formatter(hfmt)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='red',label="Battery Current (mA) ",linestyle="-",marker=".")
-		pylab.plot(t, v, color='green',label="Solar Current (mA) ",linestyle="-",marker=".")
-		pylab.plot(t, x, color='blue',label="Load Current (mA) ",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='red',label="Battery Current (mA) ",linestyle="-",marker=".")
+		pylab.plot(fds, v, color='green',label="Solar Current (mA) ",linestyle="-",marker=".")
+		pylab.plot(fds, x, color='blue',label="Load Current (mA) ",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Current (mA)")
 		pylab.legend(loc='upper left', fontsize='x-small')
-		pylab.axis([min(t), max(t), min( min(u)-10,0), max(max(v),max(u),max(x)) + 20])
+		print ("fds=", fds)
+		print ("u=", u)
+		print ("v=", u)
+		print ("x=", u)
+		pylab.axis([min(fds), max(fds), min( min(u)-10,0), max(max(v),max(u),max(x)) + 20])
 
 
 		pylab.figtext(.5, .05, ("Solar Current Performance OurWeather\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')
@@ -408,9 +418,11 @@ def buildOURWEATHERGraphSolarVoltage(password, myGraphSampleCount):
 			u.append(record[4])
 			v.append(record[6])
 
-		print ("count of t=",len(t))
 
-		fds = dates.date2num(t) # converted
+		print ("count of t=",len(t))
+		x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+	
+		fds = dates.date2num(x) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -426,12 +438,12 @@ def buildOURWEATHERGraphSolarVoltage(password, myGraphSampleCount):
 		ax.xaxis.set_major_formatter(hfmt)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
-		pylab.plot(t, v, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, v, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Voltage (V)")
 		pylab.legend(loc='upper left', fontsize='x-small')
-		pylab.axis([min(t), max(t), 0, 7])
+		pylab.axis([min(fds), max(fds), 0, 7])
 
 
 		pylab.figtext(.5, .05, ("Solar Voltage Performance OurWeather\n%s") % datetime.now(timezone('US/Pacific')),fontsize=18,ha='center')

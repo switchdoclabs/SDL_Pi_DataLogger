@@ -272,8 +272,9 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 		print ("count of t=",len(t))
 
 		lastSampleTime = t[-1]
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # convertedP
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -289,19 +290,19 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 		ax.xaxis.set_major_formatter(hfmt)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
-		pylab.plot(t, x, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, x, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Voltage (V)")
 		pylab.legend(loc='upper left', fontsize='x-small')
-		pylab.axis([min(t), max(t), 0, 7])
+		pylab.axis([min(fds), max(fds), 0, 7])
 
 		ax2 = pylab.twinx()
 		pylab.ylabel("Current (mA) ")
-		pylab.plot(t, v, color='black',label="Battery Current (mA)",linestyle="-",marker=".")
-		pylab.plot(t, y, color='blue',label="Solar Current (mA)",linestyle="-",marker=".")
-		pylab.plot(t, z, color='purple',label="Load Current (mA)",linestyle="-",marker=".")
-		pylab.axis([min(t), max(t), -60, 80])
+		pylab.plot(fds, v, color='black',label="Battery Current (mA)",linestyle="-",marker=".")
+		pylab.plot(fds, y, color='blue',label="Solar Current (mA)",linestyle="-",marker=".")
+		pylab.plot(fds, z, color='purple',label="Load Current (mA)",linestyle="-",marker=".")
+		pylab.axis([min(fds), max(fds), -60, 80])
 		pylab.legend(loc='lower left', fontsize='x-small')
 
 		pylab.figtext(.5, .01, ("Solar Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime ),fontsize=18,ha='center')
@@ -357,10 +358,11 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 			x.append(record[8])
 
 		print ("count of t=",len(t))
-
 		lastSampleTime = t[-1]
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # converted
+
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -376,13 +378,13 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 		ax.xaxis.set_major_formatter(hfmt)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='red',label="Battery Current (V) ",linestyle="-",marker=".")
-		pylab.plot(t, v, color='green',label="Solar Panel Current (V) ",linestyle="-",marker=".")
-		pylab.plot(t, x, color='blue',label="Load Current (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='red',label="Battery Current (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, v, color='green',label="Solar Panel Current (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, x, color='blue',label="Load Current (V) ",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Current (mA)")
 		pylab.legend(loc='upper left', fontsize='x-small')
-		pylab.axis([min(t), max(t), min(u)-10, max(v) + 20])
+		pylab.axis([min(fds), max(fds), min(u)-10, max(v) + 20])
 
 		
 		pylab.figtext(.5, 0.01, ("Solar Current Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime ),fontsize=18,ha='center')
@@ -440,8 +442,9 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 		print ("count of t=",len(t))
 
 		lastSampleTime = t[-1]
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -457,12 +460,12 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 		ax.xaxis.set_major_formatter(hfmt)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
-		pylab.plot(t, v, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='red',label="Battery Voltage (V) ",linestyle="-",marker=".")
+		pylab.plot(fds, v, color='green',label="Solar Voltage (V) ",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("Voltage (V)")
 		pylab.legend(loc='upper left', fontsize='x-small')
-		pylab.axis([min(t), max(t), 0, 7])
+		pylab.axis([min(fds), max(fds), 0, 7])
 
 
 		pylab.figtext(.5, .01, ("Solar Voltage Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime),fontsize=18,ha='center')
@@ -538,8 +541,9 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 		print ("count of t=",len(t))
 
 		lastSampleTime = t[-1]
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -555,9 +559,9 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 		ax.xaxis.set_major_formatter(hfmt)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, sp, color='green',label="Solar Power (mW) ",linestyle="-",marker=".")
-		pylab.plot(t, bp, color='red',label="Battery Power (mW) ",linestyle="-",marker=".")
-		pylab.plot(t, lp, color='black',label="Load Power (mW) ",linestyle="-",marker=".")
+		pylab.plot(fds, sp, color='green',label="Solar Power (mW) ",linestyle="-",marker=".")
+		pylab.plot(fds, bp, color='red',label="Battery Power (mW) ",linestyle="-",marker=".")
+		pylab.plot(fds, lp, color='black',label="Load Power (mW) ",linestyle="-",marker=".")
 		pylab.xlabel("Time")
 		pylab.ylabel("milli Watts (mW)")
 		pylab.legend(loc='upper left', fontsize='x-small')
@@ -565,7 +569,7 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 		fullpower.extend(sp)
 		fullpower.extend(bp)
 		fullpower.extend(lp)
-		pylab.axis([min(t), max(t), min(fullpower)-100  , max(fullpower)+100])
+		pylab.axis([min(fds), max(fds), min(fullpower)-100  , max(fullpower)+100])
 
 
 		pylab.figtext(.5, .01, ("System Power Performance WXLink\n%s\nLast Sample: %s") % (datetime.now(timezone('US/Pacific')), lastSampleTime),fontsize=18,ha='center')

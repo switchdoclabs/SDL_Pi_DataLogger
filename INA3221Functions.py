@@ -163,8 +163,9 @@ def buildINA3221Graph(password, myGraphSampleCount):
 		averageCurrent = averageCurrent/currentCount
 		
 		print ("count of t=",len(t))
+                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 
-		fds = dates.date2num(t) # converted
+                fds = dates.date2num(x1) # converted
 		# matplotlib date format object
 		hfmt = dates.DateFormatter('%H:%M:%S')
 		#hfmt = dates.DateFormatter('%m/%d-%H')
@@ -181,14 +182,14 @@ def buildINA3221Graph(password, myGraphSampleCount):
 		ax.set_ylim(bottom = 0.0)
 		pyplot.xticks(rotation='45')
 		pyplot.subplots_adjust(bottom=.3)
-		pylab.plot(t, u, color='r',label="OurWeather Current",linestyle="-",marker=".")
+		pylab.plot(fds, u, color='r',label="OurWeather Current",linestyle="-",marker=".")
 		pylab.xlabel("Seconds")
 		pylab.ylabel("Current mA")
 		pylab.legend(loc='lower center')
 		print "-----"
 		print max(u)
 		print "-----"
-		pylab.axis([min(t), max(t), 0, max(u)+20])
+		pylab.axis([min(fds), max(fds), 0, max(u)+20])
 		pylab.figtext(.5, .05, ("Average Current %6.2fmA\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
 
 		pylab.grid(True)
