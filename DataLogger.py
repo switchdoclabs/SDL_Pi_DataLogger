@@ -3,7 +3,7 @@
 # Gather Data, put in SQL, Graph with MatPlot Lib 
 # SwitchDoc Labs
 # 05/31/2016
-# Version 1.5 7/18/2016
+# Version 3.0  March 25, 2018
 #
 # supports:
 # INA3221 - 3 Channel Current / Voltage Measurement Device
