@@ -1,7 +1,9 @@
 Raspberry Pi DataLogger
 SwitchDoc Labs
 
-Version 3.0
+Version 4.0
+
+October 4, 2019:  Started conversion to Python3.   Added CVSensor (INA219) support
 
 March 25, 2018: Fixed MatPlot issues related to Raspberry Stretch Release
 
@@ -47,13 +49,17 @@ To Install:
 
 Install the following tools and libraries:
 
-Installing MySQL
+Installing MySQL<BR>
 MySQL - Use the following tutorial:   http://pimylifeup.com/raspberry-pi-mysql-phpmyadmin/
+
+Install a User (datalogger in this case):<BR>
+(you need to do "sudo mysql -r root -p" in this tutorial)<BR>
+https://howchoo.com/g/mtm3zdq2nzv/how-to-add-a-mysql-user-and-grant-privileges
 
 and then install the python bindings:
 
-sudo apt-get install python-mysqldb
-
+sudo python3 -m pip install PyMySQL
+sudo pip install mysql-python
 
 Installing apscheduler 
 
@@ -90,6 +96,9 @@ Installing httplib2
 
 sudo apt-get install python-httplib2
 
+Installing INA219
+
+sudo pip install pi-ina219
 
 Finally, copy DataLogger.html to /var/www/html
 
@@ -106,6 +115,7 @@ user: root
 password: password
 
 Obviously with these credentials, don't connect port 3306 to the Internet. Change them if you aren't sure.
+
 
 Now you can run DataLogger
 

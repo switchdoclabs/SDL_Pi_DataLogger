@@ -6,6 +6,7 @@
 # Version 3.0  March 25, 2018
 #
 # supports:
+# CSVSensor
 # INA3221 - 3 Channel Current / Voltage Measurement Device
 # ADS1115 - 4 Channel 16bit ADC
 # OURWEATHER - OurWeather Complete Weather Kit 
@@ -16,15 +17,16 @@
 # configuration variables
 # set to true if present, false if not
 
+INA219_Present = True
 INA3221_Present = False
 ADS1115_Present = False
-OURWEATHER_Present = True
+OURWEATHER_Present = False
 ThreePanelTest_Present = False
 WXLINK_Present = False
 
 # imports
 
-import MySQLdb as mdb
+import pymysql as mdb
 
 import os
 
@@ -34,22 +36,26 @@ from datetime import datetime
 import random 
 
 
+if INA219_Present:
+        
+        import INA219Functions
+
 if INA3221_Present:
-	import SDL_Pi_INA3221
-	import INA3221Functions
+        import SDL_Pi_INA3221
+        import INA3221Functions
 
 if ADS1115_Present:
-	from MADS1x15 import ADS1x15 
-	import ADS1115Functions
+        from MADS1x15 import ADS1x15 
+        import ADS1115Functions
 
 if OURWEATHER_Present:
-	import OURWEATHERFunctions
+        import OURWEATHERFunctions
 
 if ThreePanelTest_Present:
-	import ThreePanelTestFunctions
+        import ThreePanelTestFunctions
 
 if WXLINK_Present:
-	import WXLINKFunctions
+        import WXLINKFunctions
 
 
 
@@ -61,10 +67,11 @@ import apscheduler.events
 # constant defines
 
 #How often in seconds to sample Data
-#SampleTime = 1.0
-SampleTime = 60.0
+SampleTime = 0.01
+#SampleTime = 60.0
 #How long in seconds to sample Data
-LengthSample = 600000
+#LengthSample = 120
+LengthSample = 10
 #When to generate graph (every how many minutes) 
 GraphRefresh = 1.00
 #GraphRefresh = 10.0
@@ -72,6 +79,8 @@ GraphRefresh = 1.00
 GraphSampleCount = 2000 
 
 
+#mysql user
+username = "datalogger"
 #mysql Password
 password = 'password'
 #mysql Table Name
@@ -82,15 +91,15 @@ password = 'password'
 
 # Main Program
 
-print ""
-print "SDL_Pi_Datalogger"
-print ""
-print " Will work with the INA3221 SwitchDoc Labs Breakout Board"
-print " Will work with the ADS1115 SwitchDoc Labs Breakout Board"
-print " Will work with OurWeather - Complete Weather Kit" 
-print " Will work with SwitchDoc Labs WxLink Wireless LInk " 
-print "Program Started at:"+ time.strftime("%Y-%m-%d %H:%M:%S")
-print ""
+print("")
+print("SDL_Pi_Datalogger")
+print("")
+print(" Will work with the INA3221 SwitchDoc Labs Breakout Board")
+print(" Will work with the ADS1115 SwitchDoc Labs Breakout Board")
+print(" Will work with OurWeather - Complete Weather Kit" )
+print(" Will work with SwitchDoc Labs WxLink Wireless LInk " )
+print("Program Started at:"+ time.strftime("%Y-%m-%d %H:%M:%S"))
+print("")
 
 if ADS1115_Present:
 	# Initialise the ADC using the default mode (use default I2C address)
@@ -106,8 +115,8 @@ starttime = datetime.utcnow()
 
 def ap_my_listener(event):
         if event.exception:
-              print event.exception
-              print event.traceback
+              print(event.exception)
+              print(event.traceback)
 
 
 
@@ -117,34 +126,37 @@ def tick():
 
 def killLogger():
     scheduler.shutdown()
-    print "Scheduler Shutdown...."
+    print ("Scheduler Shutdown....")
     exit() 
 
 def doAllGraphs():
+    if INA219_Present:
+    	INA219Functions.buildINA219Graph(username, password, GraphSampleCount)
+
     if INA3221_Present:
-    	INA3221Functions.buildINA3221Graph(password, GraphSampleCount)
+    	INA3221Functions.buildINA3221Graph(username, password, GraphSampleCount)
 
     if ADS1115_Present:
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,0)
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,1)
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,2)
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,3)
+    	ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,0)
+    	ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,1)
+    	ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,2)
+    	ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,3)
 
     if OURWEATHER_Present:
-    	OURWEATHERFunctions.buildOURWEATHERGraphTemperature(password, GraphSampleCount)
-    	OURWEATHERFunctions.buildOURWEATHERGraphWind(password, GraphSampleCount)
-        OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(password, GraphSampleCount)
-        OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(password, GraphSampleCount)
+        OURWEATHERFunctions.buildOURWEATHERGraphTemperature(username, password, GraphSampleCount)
+        OURWEATHERFunctions.buildOURWEATHERGraphWind(username, password, GraphSampleCount)
+        OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(username, password, GraphSampleCount)
+        OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(username, password, GraphSampleCount)
 
     if ThreePanelTest_Present:
-    	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
-    	ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
+    	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(username, password, GraphSampleCount)
+    	ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(username, password, GraphSampleCount)
 
     if WXLINK_Present:
-    	WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
-    	WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
-    	WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
-    	WXLINKFunctions.buildWXLINKGraphSolarPower(password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolar(username, password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarCurrent(username, password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarVoltage(username, password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarPower(username, password, GraphSampleCount)
 
 if __name__ == '__main__':
 
@@ -155,54 +167,57 @@ if __name__ == '__main__':
     # make sure functions work before scheduling - may remove when debugged
 
     if OURWEATHER_Present:
-    	OURWEATHERFunctions.readOURWEATHERData(password)
-    	OURWEATHERFunctions.buildOURWEATHERGraphTemperature(password, GraphSampleCount)
-    	OURWEATHERFunctions.buildOURWEATHERGraphWind(password, GraphSampleCount)
-    	OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(password, GraphSampleCount)
-    	OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(password, GraphSampleCount)
+    	OURWEATHERFunctions.readOURWEATHERData(username, password)
+    	OURWEATHERFunctions.buildOURWEATHERGraphTemperature(username, password, GraphSampleCount)
+    	OURWEATHERFunctions.buildOURWEATHERGraphWind(username, password, GraphSampleCount)
+    	OURWEATHERFunctions.buildOURWEATHERGraphSolarVoltage(username, password, GraphSampleCount)
+    	OURWEATHERFunctions.buildOURWEATHERGraphSolarCurrent(username, password, GraphSampleCount)
 
     if WXLINK_Present:
-    	WXLINKFunctions.readWXLINKData(password)
-    	WXLINKFunctions.buildWXLINKGraphSolar(password, GraphSampleCount)
-    	WXLINKFunctions.buildWXLINKGraphSolarCurrent(password, GraphSampleCount)
-    	WXLINKFunctions.buildWXLINKGraphSolarVoltage(password, GraphSampleCount)
-    	WXLINKFunctions.buildWXLINKGraphSolarPower(password, GraphSampleCount)
+    	WXLINKFunctions.readWXLINKData(username, password)
+    	WXLINKFunctions.buildWXLINKGraphSolar(username, password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarCurrent(username, password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarVoltage(username, password, GraphSampleCount)
+    	WXLINKFunctions.buildWXLINKGraphSolarPower(username, password, GraphSampleCount)
 
     if ThreePanelTest_Present:
-    	ThreePanelTestFunctions.readThreePanelTestData(password)
-    	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(password, GraphSampleCount)
-    	ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(password, GraphSampleCount)
+    	ThreePanelTestFunctions.readThreePanelTestData(username, password)
+    	ThreePanelTestFunctions.buildThreePanelTestGraphCurrent(username, password, GraphSampleCount)
+    	ThreePanelTestFunctions.buildThreePanelTestGraphVoltage(username, password, GraphSampleCount)
 
     if ADS1115_Present:
-	ADS1115Functions.readADS1115Data(password)	
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,0)
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,1)
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,2)
-    	ADS1115Functions.buildADS1115Graph(password, GraphSampleCount,3)
+        ADS1115Functions.readADS1115Data(username, password)	
+        ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,0)
+        ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,1)
+        ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,2)
+        ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,3)
 
 
 
+
+    if INA219_Present:
+        scheduler.add_job(INA219Functions.readINA219Data, 'interval', seconds=SampleTime, args=[username, password])
 
     if INA3221_Present:
-	scheduler.add_job(INA3221Functions.readINA3221Data, 'interval', seconds=SampleTime, args=[password])
+        scheduler.add_job(INA3221Functions.readINA3221Data, 'interval', seconds=SampleTime, args=[username, password])
 
     if ADS1115_Present:
-	scheduler.add_job(ADS1115Functions.readADS1115Data, 'interval', seconds=SampleTime, args=[password])
+        scheduler.add_job(ADS1115Functions.readADS1115Data, 'interval', seconds=SampleTime, args=[username, password])
 
     if OURWEATHER_Present:
-	scheduler.add_job(OURWEATHERFunctions.readOURWEATHERData, 'interval', seconds=SampleTime, args=[password])
+        scheduler.add_job(OURWEATHERFunctions.readOURWEATHERData, 'interval', seconds=SampleTime, args=[username, password])
 
     if ThreePanelTest_Present:
-	scheduler.add_job(ThreePanelTestFunctions.readThreePanelTestData, 'interval', seconds=SampleTime, args=[password])
+        scheduler.add_job(ThreePanelTestFunctions.readThreePanelTestData, 'interval', seconds=SampleTime, args=[username, password])
 
     if WXLINK_Present:
-	scheduler.add_job(WXLINKFunctions.readWXLINKData, 'interval', seconds=SampleTime, args=[password])
+        scheduler.add_job(WXLINKFunctions.readWXLINKData, 'interval', seconds=SampleTime, args=[username, password])
 
     minuteCron = "*/"+str(int(GraphRefresh))
     scheduler.add_job(doAllGraphs, 'cron', minute=minuteCron )
 
 
-    scheduler.add_job(killLogger, 'interval', seconds=LengthSample)
+    #scheduler.add_job(killLogger, 'interval', seconds=LengthSample)
     scheduler.add_job(tick, 'interval', seconds=60)
     scheduler.start()
     scheduler.print_jobs()
