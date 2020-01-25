@@ -385,7 +385,8 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 		averageCurrent3 = averageCurrent3/currentCount
 		
 		print ("count of t=",len(t))
-                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                x1 = [d for d in t]
 
                 fds = dates.date2num(x1) # converted
 		# matplotlib date format object
@@ -394,7 +395,7 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 
 
@@ -488,7 +489,8 @@ def buildThreePanelTestGraphVoltage(password, myGraphSampleCount):
 		averageCurrent3 = averageCurrent3/currentCount
 		
 		print ("count of t=",len(t))
-                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                x1 = [d for d in t]
 
                 fds = dates.date2num(x1) # converted
 		# matplotlib date format object
@@ -497,7 +499,7 @@ def buildThreePanelTestGraphVoltage(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 
 

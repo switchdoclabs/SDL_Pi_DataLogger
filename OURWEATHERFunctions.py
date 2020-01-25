@@ -36,7 +36,7 @@ import MySQLdb as mdb
 OURWEATHERtableName = 'OURWEATHERTable'
 
 # set up your OurWeather IP Address here
-uri = 'http://192.168.1.133/FullDataString'
+uri = 'http://192.168.1.31/FullDataString'
 path = '/'
 
 # fetch the JSON data from the OurWeather device
@@ -72,7 +72,7 @@ headers = {
 
 
 
-def readOURWEATHERData(password):
+def readOURWEATHERData(username, password):
     	print('readOURWEATHERData - The time is: %s' % datetime.now())
 
 	try:
@@ -127,7 +127,7 @@ def readOURWEATHERData(password):
 
 
 
-def buildOURWEATHERGraphTemperature(password, myGraphSampleCount):
+def buildOURWEATHERGraphTemperature(user, password, myGraphSampleCount):
     		print('buildOURWEATHERGraph - The time is: %s' % datetime.now())
 
 		# open database
@@ -165,7 +165,11 @@ def buildOURWEATHERGraphTemperature(password, myGraphSampleCount):
 		averageTemperature = averageTemperature/currentCount
 		
 		print ("count of t=",len(t))
-		x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+               
+                
+		#x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+		
+		x = [d for d in t]
 	
 		fds = dates.date2num(x) # converted
 		#fds = t # converted
@@ -175,10 +179,10 @@ def buildOURWEATHERGraphTemperature(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
+		ax2 = fig.add_subplot(111,facecolor = 'white')
 
 
 
@@ -214,7 +218,7 @@ def buildOURWEATHERGraphTemperature(password, myGraphSampleCount):
 		print "------OURWEATHERGraphTemperature finished now"
 
 
-def buildOURWEATHERGraphWind(password, myGraphSampleCount):
+def buildOURWEATHERGraphWind(username, password, myGraphSampleCount):
     		print('buildOURWEATHERGraph - The time is: %s' % datetime.now())
 
 		# open database
@@ -252,7 +256,8 @@ def buildOURWEATHERGraphWind(password, myGraphSampleCount):
 		averageWindSpeed = averageWindSpeed/currentCount
 		
 		print ("count of t=",len(t))
-		x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+		x = [d for d in t]
+		#x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 	
 		fds = dates.date2num(x) # converted
 
@@ -262,7 +267,7 @@ def buildOURWEATHERGraphWind(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 
 
@@ -298,7 +303,7 @@ def buildOURWEATHERGraphWind(password, myGraphSampleCount):
 
 
 
-def buildOURWEATHERGraphSolarCurrent(password, myGraphSampleCount):
+def buildOURWEATHERGraphSolarCurrent(username, password, myGraphSampleCount):
     		print('buildOURWEATHERGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
 
 		# open database
@@ -334,7 +339,8 @@ def buildOURWEATHERGraphSolarCurrent(password, myGraphSampleCount):
 			x.append(record[8])
 
 		print ("count of t=",len(t))
-		x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+		x1 = [d for d in t]
+		#x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 	
 		fds = dates.date2num(x1) # converted
 
@@ -344,10 +350,10 @@ def buildOURWEATHERGraphSolarCurrent(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
+		ax2 = fig.add_subplot(111,facecolor = 'white')
 
 
 		ax.xaxis.set_major_formatter(hfmt)
@@ -385,7 +391,7 @@ def buildOURWEATHERGraphSolarCurrent(password, myGraphSampleCount):
 
 
 
-def buildOURWEATHERGraphSolarVoltage(password, myGraphSampleCount):
+def buildOURWEATHERGraphSolarVoltage(username, password, myGraphSampleCount):
     		print('buildOURWEATHERGraphSolar - The time is: %s' % datetime.now(timezone('US/Pacific')))
 
 		# open database
@@ -420,7 +426,8 @@ def buildOURWEATHERGraphSolarVoltage(password, myGraphSampleCount):
 
 
 		print ("count of t=",len(t))
-		x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+		#x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+		x = [d for d in t]
 	
 		fds = dates.date2num(x) # converted
 		# matplotlib date format object
@@ -429,10 +436,10 @@ def buildOURWEATHERGraphSolarVoltage(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
+		ax2 = fig.add_subplot(111,facecolor = 'white')
 
 
 		ax.xaxis.set_major_formatter(hfmt)

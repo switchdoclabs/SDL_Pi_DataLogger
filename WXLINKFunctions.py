@@ -272,7 +272,8 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 		print ("count of t=",len(t))
 
 		lastSampleTime = t[-1]
-                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                x1 = [d for d in t]
 
                 fds = dates.date2num(x1) # convertedP
 		# matplotlib date format object
@@ -281,10 +282,10 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
+		ax2 = fig.add_subplot(111,facecolor = 'white')
 
 
 		ax.xaxis.set_major_formatter(hfmt)
@@ -359,7 +360,8 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 
 		print ("count of t=",len(t))
 		lastSampleTime = t[-1]
-                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                x1 = [d for d in t]
 
                 fds = dates.date2num(x1) # converted
 
@@ -369,10 +371,10 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
+		ax2 = fig.add_subplot(111,facecolor = 'white')
 
 
 		ax.xaxis.set_major_formatter(hfmt)
@@ -442,7 +444,8 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 		print ("count of t=",len(t))
 
 		lastSampleTime = t[-1]
-                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                x1 = [d for d in t]
 
                 fds = dates.date2num(x1) # converted
 		# matplotlib date format object
@@ -451,10 +454,10 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
+		ax2 = fig.add_subplot(111,facecolor = 'white')
 
 
 		ax.xaxis.set_major_formatter(hfmt)
@@ -541,7 +544,8 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 		print ("count of t=",len(t))
 
 		lastSampleTime = t[-1]
-                x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                x1 = [d for d in t]
 
                 fds = dates.date2num(x1) # converted
 		# matplotlib date format object
@@ -550,10 +554,10 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 
 		fig = pyplot.figure()
 		fig.set_facecolor('white')
-		ax = fig.add_subplot(111,axisbg = 'white')
+		ax = fig.add_subplot(111,facecolor = 'white')
 		ax.vlines(fds, -200.0, 1000.0,colors='w')
 		
-		ax2 = fig.add_subplot(111,axisbg = 'white')
+		ax2 = fig.add_subplot(111,facecolor = 'white')
 
 
 		ax.xaxis.set_major_formatter(hfmt)

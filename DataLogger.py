@@ -17,10 +17,10 @@
 # configuration variables
 # set to true if present, false if not
 
-INA219_Present = True
+INA219_Present = False
 INA3221_Present = False
 ADS1115_Present = False
-OURWEATHER_Present = False
+OURWEATHER_Present = True
 ThreePanelTest_Present = False
 WXLINK_Present = False
 
@@ -67,8 +67,8 @@ import apscheduler.events
 # constant defines
 
 #How often in seconds to sample Data
-SampleTime = 0.01
-#SampleTime = 60.0
+#SampleTime = 0.01
+SampleTime = 60.0
 #How long in seconds to sample Data
 #LengthSample = 120
 LengthSample = 10
