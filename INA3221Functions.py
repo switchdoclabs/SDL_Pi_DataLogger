@@ -1,3 +1,4 @@
+from __future__ import print_function
 ######################################
 #
 # readINA3221Data and buildINA3221Graph
@@ -16,7 +17,8 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 import pylab
 
 from datetime import datetime
-import pymysql as mdb
+import MySQLdb as mdb
+
 import SDL_Pi_INA3221
 
 # the three channels of the INA3221 named for SunAirPlus Solar Power Controller channels (www.switchdoc.com)
@@ -27,14 +29,14 @@ OUTPUT_CHANNEL       = 3
 INA3221tableName = 'INA3221Table'
 
 #initialize the ina3221 board
-ina3221 = SDL_Pi_INA3221.SDL_Pi_INA3221(addr=0x40)
+ina3221 = SDL_Pi_INA3221.SDL_Pi_INA3221(addr=0x41)
 
-def readINA3221Data(password):
+def readINA3221Data(username, password):
         print('readINA3221Data - The time is: %s' % datetime.now())
 
 
         # open database
-        con = mdb.connect('localhost', 'root', password, 'DataLogger' )
+        con = mdb.connect(host='localhost', user='root', passwd=password, db='DataLogger' )
         cur = con.cursor()
         print("------------------------------")
         shuntvoltage1 = 0
@@ -59,7 +61,7 @@ def readINA3221Data(password):
         print( "(Channel 1) %s Shunt Voltage 1: %3.2f mV " % (myLabel, shuntvoltage1))
         print( "(Channel 1) %s Load Voltage 1:  %3.2f V" % (myLabel, loadvoltage1))
         print( "(Channel 1) %s Current 1:  %3.2f mA" % (myLabel, current_mA1))
-        print
+        print()
 
         shuntvoltage2 = 0
         busvoltage2 = 0
@@ -80,7 +82,7 @@ def readINA3221Data(password):
         print ("(Channel 2) %s Shunt Voltage 2: %3.2f mV " % (myLabel, shuntvoltage2))
         print ("(Channel 2) %s Load Voltage 2:  %3.2f V" % (myLabel, loadvoltage2))
         print ("(Channel 2) %s Current 2:  %3.2f mA" % (myLabel, current_mA2))
-        print 
+        print() 
 
         shuntvoltage3 = 0
         busvoltage3 = 0
@@ -100,7 +102,7 @@ def readINA3221Data(password):
         print( "(Channel 3) %s Shunt Voltage 3: %3.2f mV " % (myLabel, shuntvoltage3))
         print( "(Channel 3) %s Load Voltage 3:  %3.2f V" % (myLabel, loadvoltage3))
         print( "(Channel 3) %s Current 3:  %3.2f mA" % (myLabel, current_mA3))
-        print
+        print()
 	#
 	# Now put the data in MySQL
 	# 
@@ -126,7 +128,7 @@ def readINA3221Data(password):
 
 
 
-def buildINA3221Graph(password, myGraphSampleCount):
+def buildINA3221Graph(username, password, myGraphSampleCount):
                 print('buildINA3221Graph - The time is: %s' % datetime.now())
 
                 # open database
@@ -138,7 +140,7 @@ def buildINA3221Graph(password, myGraphSampleCount):
                 print( myGraphSampleCount)
                 query = '(SELECT timestamp, deviceid, channel1_load_voltage, channel1_current, channel2_load_voltage, channel2_current, channel3_load_voltage, channel3_current, id FROM '+INA3221tableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-                print("query=", query)
+                print(("query=", query))
                 try:
                     mycursor.execute(query)
                     result = mycursor.fetchall()
@@ -151,19 +153,19 @@ def buildINA3221Graph(password, myGraphSampleCount):
 
                 print (result[0])
                 t = []   # time
-                u = []   # channel 1 - Current 
+                u = []   # channel 3 - Current 
                 averageCurrent = 0.0
                 currentCount = 0
                 for record in result:
                     t.append(record[0])
-                    u.append(record[3])
-                    averageCurrent = averageCurrent+record[3]
+                    u.append(record[7])
+                    averageCurrent = averageCurrent+record[7]
                     currentCount=currentCount+1
 
                 averageCurrent = averageCurrent/currentCount
             
 		
-                print ("count of t=",len(t))
+                print(("count of t=",len(t)))
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
                 x1 = [d for d in t]
                 
@@ -184,7 +186,7 @@ def buildINA3221Graph(password, myGraphSampleCount):
                 ax.set_ylim(bottom = 0.0)
                 pyplot.xticks(rotation='45')
                 pyplot.subplots_adjust(bottom=.3)
-                pylab.plot(fds, u, color='r',label="OurWeather Current",linestyle="-",marker=".")
+                pylab.plot(fds, u, color='r',label="Load Current",linestyle="-",marker=".")
                 pylab.xlabel("Seconds")
                 pylab.ylabel("Current mA")
                 pylab.legend(loc='lower center')
@@ -192,7 +194,7 @@ def buildINA3221Graph(password, myGraphSampleCount):
                 print(max(u))
                 print("-----")
                 pylab.axis([min(fds), max(fds), 0, max(u)+20])
-                pylab.figtext(.5, .05, ("Average Current %6.2fmA\n%s") %(averageCurrent, datetime.now()),fontsize=18,ha='center')
+                pylab.figtext(.5, .04, ("Average Current %6.2fmA\n%s") %(averageCurrent, datetime.now()),fontsize=14,ha='center')
                 
                 pylab.grid(True)
                 
@@ -209,7 +211,6 @@ def buildINA3221Graph(password, myGraphSampleCount):
                 pylab.close()
                 gc.collect()
                 print( "------INA3221Graph finished now")
-
 
 ######################################
 #

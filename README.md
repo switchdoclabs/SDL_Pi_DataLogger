@@ -1,7 +1,9 @@
 Raspberry Pi DataLogger
 SwitchDoc Labs
 
-Version 4.1
+Version 5.0
+
+June 8, 2021: converted to Python3
 
 January 25, 2020: Fixed string datatime errors and updated matplotlib to facecolor
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 ######################################
 #
@@ -78,18 +79,18 @@ def readOURWEATHERData(username, password):
 	try:
 		data = fetchJSONData(uri, path)
 	except:
-		print "-----Can't read from OurWeather"
+		print("-----Can't read from OurWeather")
 
 
 	# pre split weather data
 	preSplitData = data['FullDataString']
 	WData = preSplitData.split(",")
-	print WData
+	print(WData)
 
 	if (len(WData) < 18):   
 		# we have a bad read
 		# try again later
-		print "bad read from OurWeather"
+		print("bad read from OurWeather")
 		return 0
 
 	if (len(WData) == 18):
@@ -106,7 +107,7 @@ def readOURWEATHERData(username, password):
 	# 
         # Put record in MySQL
 
-        print "writing SQLdata ";
+        print("writing SQLdata ");
 
 
         # write record
@@ -136,16 +137,16 @@ def buildOURWEATHERGraphTemperature(user, password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, Outdoor_Humidity, OurWeather_Station_Name, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 
 		t = []   # time
@@ -164,7 +165,7 @@ def buildOURWEATHERGraphTemperature(user, password, myGraphSampleCount):
 
 		averageTemperature = averageTemperature/currentCount
 		
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
                
                 
 		#x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
@@ -215,7 +216,7 @@ def buildOURWEATHERGraphTemperature(user, password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------OURWEATHERGraphTemperature finished now"
+		print("------OURWEATHERGraphTemperature finished now")
 
 
 def buildOURWEATHERGraphWind(username, password, myGraphSampleCount):
@@ -227,16 +228,16 @@ def buildOURWEATHERGraphWind(username, password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Current_Wind_Speed, Current_Wind_Gust, OurWeather_Station_Name, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 
 		t = []   # time
@@ -255,7 +256,7 @@ def buildOURWEATHERGraphWind(username, password, myGraphSampleCount):
 
 		averageWindSpeed = averageWindSpeed/currentCount
 		
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
 		x = [d for d in t]
 		#x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 	
@@ -299,7 +300,7 @@ def buildOURWEATHERGraphWind(username, password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------OURWEATHERGraphWind finished now"
+		print("------OURWEATHERGraphWind finished now")
 
 
 
@@ -312,16 +313,16 @@ def buildOURWEATHERGraphSolarCurrent(username, password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, Outdoor_Humidity, Battery_Voltage, Battery_Current, Solar_Voltage, Solar_Current,  Load_Current, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 		
 		t = []   # time
@@ -338,7 +339,7 @@ def buildOURWEATHERGraphSolarCurrent(username, password, myGraphSampleCount):
 			v.append(record[7])
 			x.append(record[8])
 
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
 		x1 = [d for d in t]
 		#x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 	
@@ -365,10 +366,10 @@ def buildOURWEATHERGraphSolarCurrent(username, password, myGraphSampleCount):
 		pylab.xlabel("Time")
 		pylab.ylabel("Current (mA)")
 		pylab.legend(loc='upper left', fontsize='x-small')
-		print ("fds=", fds)
-		print ("u=", u)
-		print ("v=", u)
-		print ("x=", u)
+		print(("fds=", fds))
+		print(("u=", u))
+		print(("v=", u))
+		print(("x=", u))
 		pylab.axis([min(fds), max(fds), min( min(u)-10,0), max(max(v),max(u),max(x)) + 20])
 
 
@@ -387,7 +388,7 @@ def buildOURWEATHERGraphSolarCurrent(username, password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------OURWEATHERGraphCurrent finished now"
+		print("------OURWEATHERGraphCurrent finished now")
 
 
 
@@ -400,16 +401,16 @@ def buildOURWEATHERGraphSolarVoltage(username, password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, Outdoor_Humidity, Battery_Voltage, Battery_Current, Solar_Voltage, Solar_Current,  Load_Current, id FROM '+OURWEATHERtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 		
 		t = []   # time
@@ -425,7 +426,7 @@ def buildOURWEATHERGraphSolarVoltage(username, password, myGraphSampleCount):
 			v.append(record[6])
 
 
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
 		#x = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
 		x = [d for d in t]
 	
@@ -468,7 +469,7 @@ def buildOURWEATHERGraphSolarVoltage(username, password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------OURWEATHERGraphSolarVoltage finished now"
+		print("------OURWEATHERGraphSolarVoltage finished now")
 
 
 

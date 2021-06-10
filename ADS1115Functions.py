@@ -1,3 +1,4 @@
+from __future__ import print_function
 ######################################
 #
 # readADS1115Data and buildADS1115Graph
@@ -46,7 +47,7 @@ def readADS1115Data(password):
         sps = 250  # 250 samples per second
 
 
-  	print "------------------------------"
+  	print("------------------------------")
         rawData = []
 	Voltage = []
 
@@ -63,7 +64,7 @@ def readADS1115Data(password):
 	# 
         # Put record in MySQL
 
-        print "writing SQLdata ";
+        print("writing SQLdata ");
 
 
         # write record
@@ -92,19 +93,19 @@ def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, channel0_voltage, channel0_raw, channel1_voltage, channel1_raw, channel2_voltage, channel2_raw, channel3_voltage, channel3_raw, id FROM '+ADS1115tableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 
-		print result[0]
+		print(result[0])
 		t = []   # time
 		u = []   # channel 1 - Current 
 		averageCurrent = 0.0
@@ -139,7 +140,7 @@ def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
 
 		averageCurrent = averageCurrent/currentCount
 		
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
                 x1 = [d for d in t]
 
@@ -227,7 +228,7 @@ def buildADS1115Graph(password, myGraphSampleCount, graphNumber):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------ADS1115Graph"+str(graphNumber)+" finished now"
+		print("------ADS1115Graph"+str(graphNumber)+" finished now")
 
 
 ######################################

@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 ######################################
 #
@@ -90,23 +91,23 @@ def readWXLINKData(password):
    	try:
 		data1 = "" 
    		data2 =  ""
-   		print "-----------"
-   		print "block 1"
+   		print("-----------")
+   		print("block 1")
    		data1 = i2cbus.read_i2c_block_data(WXLINKaddress, 0);
 		data1 = bytearray(data1)
    		#data1 = i2cbus.read_i2c_block_data(WXLINKaddress, 0);
-   		print ' '.join(hex(x) for x in data1) 
-   		print "block 2"
+   		print(' '.join(hex(x) for x in data1)) 
+   		print("block 2")
    		data2 = i2cbus.read_i2c_block_data(WXLINKaddress, 1);
 		data2 = bytearray(data2)
    		#data2 = i2cbus.read_i2c_block_data(WXLINKaddress, 1);
-   		print ' '.join(hex(x) for x in data2) 
-   		print "-----------"
+   		print(' '.join(hex(x) for x in data2)) 
+   		print("-----------")
 
 
 
                 if ((len(data1) == 0) or (len(data2) == 0)):
-			print "zero length WXLink Read"
+			print("zero length WXLink Read")
 			return   # bad read
 
 
@@ -116,11 +117,11 @@ def readWXLINKData(password):
                 receivedCRC = unpack('H', str(data2[29:31]))[0]
                 #swap bytes for recievedCRC
                 receivedCRC = (((receivedCRC)>>8) | ((receivedCRC&0xFF)<<8))&0xFFFF
-                print "ReversedreceivedCRC= %x" % receivedCRC
+                print("ReversedreceivedCRC= %x" % receivedCRC)
 
                 calculatedCRC = crcCalc.calculate(data1+data2[0:27])
 
-                print "calculatedCRC = %x " % calculatedCRC
+                print("calculatedCRC = %x " % calculatedCRC)
 
                 # check for start bytes, if not present, then invalidate CRC
 
@@ -129,11 +130,11 @@ def readWXLINKData(password):
 
 
 		if (receivedCRC == calculatedCRC):
-                        print "Good CRC Recived"
+                        print("Good CRC Recived")
 
 			#data1
 	
-			print len(data1)
+			print(len(data1))
 			header0 = data1[0]
 			header1 = data1[1]
 			protocol = data1[2]
@@ -162,28 +163,28 @@ def readWXLINKData(password):
 			checksumHigh = data2[30]
 
 
-			print "header = %x %x" % (header0, header1)
-			print "protocol = %d" % (protocol )
-			print "timeSinceReboot = %d" % timeSinceReboot
-			print "windDirection = %d" % windDirection
-			print "averageWindSpeed = %6.2f" % averageWindSpeed
-			print "windClicks = %d" % windClicks
-			print "totalRainClicks = %d" % totalRainClicks
-			print "maximumWindGust = %6.2f" % maximumWindGust
-			print "outsideTemperature = %6.2f" % outsideTemperature
-			print "outsideHumidity = %6.2f" % outsideHumidity
+			print("header = %x %x" % (header0, header1))
+			print("protocol = %d" % (protocol ))
+			print("timeSinceReboot = %d" % timeSinceReboot)
+			print("windDirection = %d" % windDirection)
+			print("averageWindSpeed = %6.2f" % averageWindSpeed)
+			print("windClicks = %d" % windClicks)
+			print("totalRainClicks = %d" % totalRainClicks)
+			print("maximumWindGust = %6.2f" % maximumWindGust)
+			print("outsideTemperature = %6.2f" % outsideTemperature)
+			print("outsideHumidity = %6.2f" % outsideHumidity)
 	
 			# data 2
 		
-			print "batteryVoltage = %6.2f" % batteryVoltage
-			print "batteryCurrent = %6.2f" % batteryCurrent
-			print "loadCurrent = %6.2f" % loadCurrent
-			print "solarPanelVoltage = %6.2f" % solarPanelVoltage
-			print "solarPanelCurrent = %6.2f" % solarPanelCurrent
-			print "auxA = %6.2f" % auxA
-			print "messageID = %d" % (messageID )
-			print "checksumHigh =0x%x" % (checksumHigh )
-			print "checksumLow =0x%x" % (checksumLow )
+			print("batteryVoltage = %6.2f" % batteryVoltage)
+			print("batteryCurrent = %6.2f" % batteryCurrent)
+			print("loadCurrent = %6.2f" % loadCurrent)
+			print("solarPanelVoltage = %6.2f" % solarPanelVoltage)
+			print("solarPanelCurrent = %6.2f" % solarPanelCurrent)
+			print("auxA = %6.2f" % auxA)
+			print("messageID = %d" % (messageID ))
+			print("checksumHigh =0x%x" % (checksumHigh ))
+			print("checksumLow =0x%x" % (checksumLow ))
 	
 			# open database
 			con = mdb.connect('localhost', 'root', password, 'DataLogger' )
@@ -194,7 +195,7 @@ def readWXLINKData(password):
 			# 
         		# Put record in MySQL
 	
-        		print "writing SQLdata ";
+        		print("writing SQLdata ");
 		
 			try:
 				# get last record read
@@ -203,9 +204,9 @@ def readWXLINKData(password):
 		
 				results = cur.fetchone()
 				lastMessageID = results[0]
-				print "lastMessageID =", lastMessageID
+				print("lastMessageID =", lastMessageID)
 			except:
-				print "No data in Database"
+				print("No data in Database")
 				lastMessageID = -1
 		
 			if (lastMessageID != messageID):
@@ -223,8 +224,8 @@ def readWXLINKData(password):
 		
 			con.commit()
 	except:
-		print "Error in reading WXLINK"	
-		print sys.exc_info()[0]	
+		print("Error in reading WXLINK")	
+		print(sys.exc_info()[0])	
 	
 	
 # WXLINK graph building routine
@@ -239,16 +240,16 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, Battery_Voltage, Battery_Current, Solar_Panel_Voltage, Solar_Panel_Current,  Load_Current, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 		
 		t = []   # time
@@ -269,7 +270,7 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 			y.append(record[7])
 			z.append(record[8])
 
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
 
 		lastSampleTime = t[-1]
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
@@ -321,7 +322,7 @@ def buildWXLINKGraphSolar(password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------WXLINKGraphTemperature finished now"
+		print("------WXLINKGraphTemperature finished now")
 
 def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
     		print('buildWXLINKGraphSolarCurrent - The time is: %s' % datetime.now(timezone('US/Pacific')))
@@ -332,16 +333,16 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, Battery_Voltage, Battery_Current, Solar_Panel_Voltage, Solar_Panel_Current,  Load_Current, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 		
 		t = []   # time
@@ -358,7 +359,7 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 			v.append(record[7])
 			x.append(record[8])
 
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
 		lastSampleTime = t[-1]
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
                 x1 = [d for d in t]
@@ -404,7 +405,7 @@ def buildWXLINKGraphSolarCurrent(password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------WXLINKGraphCurrent finished now"
+		print("------WXLINKGraphCurrent finished now")
 
 
 
@@ -417,16 +418,16 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, Battery_Voltage, Battery_Current, Solar_Panel_Voltage, Solar_Panel_Current,  Load_Current, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 		
 		t = []   # time
@@ -441,7 +442,7 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 			u.append(record[4])
 			v.append(record[6])
 
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
 
 		lastSampleTime = t[-1]
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
@@ -486,7 +487,7 @@ def buildWXLINKGraphSolarVoltage(password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------WXLINKGraphSolarVoltage finished now"
+		print("------WXLINKGraphSolarVoltage finished now")
 
 
 
@@ -500,16 +501,16 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, Outdoor_Temperature, OutDoor_Humidity, Battery_Voltage, Battery_Current, Solar_Panel_Voltage, Solar_Panel_Current,  Load_Current, id FROM '+WXLINKtableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
 		except:
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 		
 		t = []   # time
@@ -541,7 +542,7 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 
 			
 
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
 
 		lastSampleTime = t[-1]
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
@@ -591,7 +592,7 @@ def buildWXLINKGraphSolarPower(password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------WXLINKGraphPower finished now"
+		print("------WXLINKGraphPower finished now")
 
 
 

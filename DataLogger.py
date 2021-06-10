@@ -17,10 +17,11 @@
 # configuration variables
 # set to true if present, false if not
 
+from __future__ import print_function
 INA219_Present = False
-INA3221_Present = False
+INA3221_Present = True
 ADS1115_Present = False
-OURWEATHER_Present = True
+OURWEATHER_Present = False
 ThreePanelTest_Present = False
 WXLINK_Present = False
 
@@ -67,13 +68,13 @@ import apscheduler.events
 # constant defines
 
 #How often in seconds to sample Data
-#SampleTime = 0.01
-SampleTime = 60.0
+SampleTime = 0.05
+#SampleTime = 60.0
 #How long in seconds to sample Data
 #LengthSample = 120
-LengthSample = 10
+LengthSample = 120
 #When to generate graph (every how many minutes) 
-GraphRefresh = 1.00
+GraphRefresh = 1
 #GraphRefresh = 10.0
 #How many samples to Graph
 GraphSampleCount = 2000 
@@ -214,7 +215,9 @@ if __name__ == '__main__':
         scheduler.add_job(WXLINKFunctions.readWXLINKData, 'interval', seconds=SampleTime, args=[username, password])
 
     minuteCron = "*/"+str(int(GraphRefresh))
-    scheduler.add_job(doAllGraphs, 'cron', minute=minuteCron )
+    scheduler.add_job(doAllGraphs, 'cron', second="0,15,30,45" )
+
+    #scheduler.add_job(doAllGraphs, 'cron', minute=minuteCron )
 
 
     #scheduler.add_job(killLogger, 'interval', seconds=LengthSample)

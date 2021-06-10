@@ -1,3 +1,4 @@
+from __future__ import print_function
 ######################################
 #
 # readINA219Data and buildINA219Graph
@@ -55,7 +56,7 @@ def readINA219Data(username, password):
         print("%s Voltage :  %3.2f V" % (myLabel, voltage))
         print("%s Current :  %3.2f mA" % (myLabel, current))
         print("%s Power :  %3.2f mW" % (myLabel, power))
-        print
+        print()
 
 	#
 	# Now put the data in MySQL
@@ -98,7 +99,7 @@ def buildINA219Graph(username, password, myGraphSampleCount):
                 print(myGraphSampleCount)
                 query = '(SELECT timestamp, voltage, current, power, id FROM '+INA219tableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-                print("query=", query)
+                print(("query=", query))
                 try:
                     mycursor.execute(query)
                     result = mycursor.fetchall()
@@ -131,7 +132,7 @@ def buildINA219Graph(username, password, myGraphSampleCount):
 
                 averageCurrent = averageCurrent/currentCount
                 ''
-                print ("count of t=",len(t))
+                print(("count of t=",len(t)))
                 x1 =  t
 
 		# matplotlib date format object

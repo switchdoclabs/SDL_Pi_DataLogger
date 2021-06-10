@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 ######################################
 #
@@ -62,9 +63,9 @@ def readThreePanelTestData(password):
 	# open database
 	con = mdb.connect('localhost', 'root', password, 'DataLogger' )
 	cur = con.cursor()
-  	print "------------------------------"
-	print "Panel 1"
-  	print "------------------------------"
+  	print("------------------------------")
+	print("Panel 1")
+  	print("------------------------------")
 	tca9545.write_control_register(TCA9545_CONFIG_BUS1)
 
 	#initialize the ina3221 board
@@ -77,7 +78,7 @@ def readThreePanelTestData(password):
 
 
   	busvoltage1 = ina3221.getBusVoltage_V(LIPO_BATTERY_CHANNEL)
-  	print "------------------------------"
+  	print("------------------------------")
   	shuntvoltage1 = ina3221.getShuntVoltage_mV(LIPO_BATTERY_CHANNEL)
   	# minus is to get the "sense" right.   - means the battery is charging, + that it is discharging
   	current_mA1 = ina3221.getCurrent_mA(LIPO_BATTERY_CHANNEL)  
@@ -88,11 +89,11 @@ def readThreePanelTestData(password):
 	# myLabel = "LIPO_Battery"
         myLabel = ""  
 
-  	print "(Channel 1) %s Bus Voltage 1: %3.2f V " % (myLabel, busvoltage1)
-  	print "(Channel 1) %s Shunt Voltage 1: %3.2f mV " % (myLabel, shuntvoltage1)
-  	print "(Channel 1) %s Load Voltage 1:  %3.2f V" % (myLabel, loadvoltage1)
-  	print "(Channel 1) %s Current 1:  %3.2f mA" % (myLabel, current_mA1)
-  	print
+  	print("(Channel 1) %s Bus Voltage 1: %3.2f V " % (myLabel, busvoltage1))
+  	print("(Channel 1) %s Shunt Voltage 1: %3.2f mV " % (myLabel, shuntvoltage1))
+  	print("(Channel 1) %s Load Voltage 1:  %3.2f V" % (myLabel, loadvoltage1))
+  	print("(Channel 1) %s Current 1:  %3.2f mA" % (myLabel, current_mA1))
+  	print()
 
   	shuntvoltage2 = 0
   	busvoltage2 = 0
@@ -109,11 +110,11 @@ def readThreePanelTestData(password):
 	# myLabel = "Solar Cell"
         myLabel = ""  
 
-  	print "(Channel 2) %s Bus Voltage 2:  %3.2f V " % (myLabel, busvoltage2)
-  	print "(Channel 2) %s Shunt Voltage 2: %3.2f mV " % (myLabel, shuntvoltage2)
-  	print "(Channel 2) %s Load Voltage 2:  %3.2f V" % (myLabel, loadvoltage2)
-  	print "(Channel 2) %s Current 2:  %3.2f mA" % (myLabel, current_mA2)
-  	print 
+  	print("(Channel 2) %s Bus Voltage 2:  %3.2f V " % (myLabel, busvoltage2))
+  	print("(Channel 2) %s Shunt Voltage 2: %3.2f mV " % (myLabel, shuntvoltage2))
+  	print("(Channel 2) %s Load Voltage 2:  %3.2f V" % (myLabel, loadvoltage2))
+  	print("(Channel 2) %s Current 2:  %3.2f mA" % (myLabel, current_mA2))
+  	print() 
 
   	shuntvoltage3 = 0
   	busvoltage3 = 0
@@ -129,17 +130,17 @@ def readThreePanelTestData(password):
 	# myLabel = "Output"
         myLabel = ""  
   
-  	print "(Channel 3) %s Bus Voltage 3:  %3.2f V " % (myLabel, busvoltage3)
-  	print "(Channel 3) %s Shunt Voltage 3: %3.2f mV " % (myLabel, shuntvoltage3)
-  	print "(Channel 3) %s Load Voltage 3:  %3.2f V" % (myLabel, loadvoltage3)
-  	print "(Channel 3) %s Current 3:  %3.2f mA" % (myLabel, current_mA3)
-  	print
+  	print("(Channel 3) %s Bus Voltage 3:  %3.2f V " % (myLabel, busvoltage3))
+  	print("(Channel 3) %s Shunt Voltage 3: %3.2f mV " % (myLabel, shuntvoltage3))
+  	print("(Channel 3) %s Load Voltage 3:  %3.2f V" % (myLabel, loadvoltage3))
+  	print("(Channel 3) %s Current 3:  %3.2f mA" % (myLabel, current_mA3))
+  	print()
 	#
 	# Now put the data in MySQL
 	# 
         # Put record in MySQL
 
-        print "writing SQLdata ";
+        print("writing SQLdata ");
 
 
         # write record
@@ -149,9 +150,9 @@ def readThreePanelTestData(password):
 
         cur.execute(query)	
 
-  	print "------------------------------"
-	print "Panel 2"
-  	print "------------------------------"
+  	print("------------------------------")
+	print("Panel 2")
+  	print("------------------------------")
 
 	tca9545.write_control_register(TCA9545_CONFIG_BUS2)
 	#initialize the ina3221 board
@@ -164,7 +165,7 @@ def readThreePanelTestData(password):
 
 
   	busvoltage1 = ina3221.getBusVoltage_V(LIPO_BATTERY_CHANNEL)
-  	print "------------------------------"
+  	print("------------------------------")
   	shuntvoltage1 = ina3221.getShuntVoltage_mV(LIPO_BATTERY_CHANNEL)
   	# minus is to get the "sense" right.   - means the battery is charging, + that it is discharging
   	current_mA1 = ina3221.getCurrent_mA(LIPO_BATTERY_CHANNEL)  
@@ -175,11 +176,11 @@ def readThreePanelTestData(password):
 	# myLabel = "LIPO_Battery"
         myLabel = ""  
 
-  	print "(Channel 1) %s Bus Voltage 1: %3.2f V " % (myLabel, busvoltage1)
-  	print "(Channel 1) %s Shunt Voltage 1: %3.2f mV " % (myLabel, shuntvoltage1)
-  	print "(Channel 1) %s Load Voltage 1:  %3.2f V" % (myLabel, loadvoltage1)
-  	print "(Channel 1) %s Current 1:  %3.2f mA" % (myLabel, current_mA1)
-  	print
+  	print("(Channel 1) %s Bus Voltage 1: %3.2f V " % (myLabel, busvoltage1))
+  	print("(Channel 1) %s Shunt Voltage 1: %3.2f mV " % (myLabel, shuntvoltage1))
+  	print("(Channel 1) %s Load Voltage 1:  %3.2f V" % (myLabel, loadvoltage1))
+  	print("(Channel 1) %s Current 1:  %3.2f mA" % (myLabel, current_mA1))
+  	print()
 
   	shuntvoltage2 = 0
   	busvoltage2 = 0
@@ -196,11 +197,11 @@ def readThreePanelTestData(password):
 	# myLabel = "Solar Cell"
         myLabel = ""  
 
-  	print "(Channel 2) %s Bus Voltage 2:  %3.2f V " % (myLabel, busvoltage2)
-  	print "(Channel 2) %s Shunt Voltage 2: %3.2f mV " % (myLabel, shuntvoltage2)
-  	print "(Channel 2) %s Load Voltage 2:  %3.2f V" % (myLabel, loadvoltage2)
-  	print "(Channel 2) %s Current 2:  %3.2f mA" % (myLabel, current_mA2)
-  	print 
+  	print("(Channel 2) %s Bus Voltage 2:  %3.2f V " % (myLabel, busvoltage2))
+  	print("(Channel 2) %s Shunt Voltage 2: %3.2f mV " % (myLabel, shuntvoltage2))
+  	print("(Channel 2) %s Load Voltage 2:  %3.2f V" % (myLabel, loadvoltage2))
+  	print("(Channel 2) %s Current 2:  %3.2f mA" % (myLabel, current_mA2))
+  	print() 
 
   	shuntvoltage3 = 0
   	busvoltage3 = 0
@@ -216,17 +217,17 @@ def readThreePanelTestData(password):
 	# myLabel = "Output"
         myLabel = ""  
   
-  	print "(Channel 3) %s Bus Voltage 3:  %3.2f V " % (myLabel, busvoltage3)
-  	print "(Channel 3) %s Shunt Voltage 3: %3.2f mV " % (myLabel, shuntvoltage3)
-  	print "(Channel 3) %s Load Voltage 3:  %3.2f V" % (myLabel, loadvoltage3)
-  	print "(Channel 3) %s Current 3:  %3.2f mA" % (myLabel, current_mA3)
-  	print
+  	print("(Channel 3) %s Bus Voltage 3:  %3.2f V " % (myLabel, busvoltage3))
+  	print("(Channel 3) %s Shunt Voltage 3: %3.2f mV " % (myLabel, shuntvoltage3))
+  	print("(Channel 3) %s Load Voltage 3:  %3.2f V" % (myLabel, loadvoltage3))
+  	print("(Channel 3) %s Current 3:  %3.2f mA" % (myLabel, current_mA3))
+  	print()
 	#
 	# Now put the data in MySQL
 	# 
         # Put record in MySQL
 
-        print "writing SQLdata ";
+        print("writing SQLdata ");
 
 
         # write record
@@ -236,9 +237,9 @@ def readThreePanelTestData(password):
 
         cur.execute(query)	
 
-  	print "------------------------------"
-	print "Panel 3"
-  	print "------------------------------"
+  	print("------------------------------")
+	print("Panel 3")
+  	print("------------------------------")
 
 
 	tca9545.write_control_register(TCA9545_CONFIG_BUS3)
@@ -253,7 +254,7 @@ def readThreePanelTestData(password):
 
 
   	busvoltage1 = ina3221.getBusVoltage_V(LIPO_BATTERY_CHANNEL)
-  	print "------------------------------"
+  	print("------------------------------")
   	shuntvoltage1 = ina3221.getShuntVoltage_mV(LIPO_BATTERY_CHANNEL)
   	# minus is to get the "sense" right.   - means the battery is charging, + that it is discharging
   	current_mA1 = ina3221.getCurrent_mA(LIPO_BATTERY_CHANNEL)  
@@ -264,11 +265,11 @@ def readThreePanelTestData(password):
 	# myLabel = "LIPO_Battery"
         myLabel = ""  
 
-  	print "(Channel 1) %s Bus Voltage 1: %3.2f V " % (myLabel, busvoltage1)
-  	print "(Channel 1) %s Shunt Voltage 1: %3.2f mV " % (myLabel, shuntvoltage1)
-  	print "(Channel 1) %s Load Voltage 1:  %3.2f V" % (myLabel, loadvoltage1)
-  	print "(Channel 1) %s Current 1:  %3.2f mA" % (myLabel, current_mA1)
-  	print
+  	print("(Channel 1) %s Bus Voltage 1: %3.2f V " % (myLabel, busvoltage1))
+  	print("(Channel 1) %s Shunt Voltage 1: %3.2f mV " % (myLabel, shuntvoltage1))
+  	print("(Channel 1) %s Load Voltage 1:  %3.2f V" % (myLabel, loadvoltage1))
+  	print("(Channel 1) %s Current 1:  %3.2f mA" % (myLabel, current_mA1))
+  	print()
 
   	shuntvoltage2 = 0
   	busvoltage2 = 0
@@ -285,11 +286,11 @@ def readThreePanelTestData(password):
 	# myLabel = "Solar Cell"
         myLabel = ""  
 
-  	print "(Channel 2) %s Bus Voltage 2:  %3.2f V " % (myLabel, busvoltage2)
-  	print "(Channel 2) %s Shunt Voltage 2: %3.2f mV " % (myLabel, shuntvoltage2)
-  	print "(Channel 2) %s Load Voltage 2:  %3.2f V" % (myLabel, loadvoltage2)
-  	print "(Channel 2) %s Current 2:  %3.2f mA" % (myLabel, current_mA2)
-  	print 
+  	print("(Channel 2) %s Bus Voltage 2:  %3.2f V " % (myLabel, busvoltage2))
+  	print("(Channel 2) %s Shunt Voltage 2: %3.2f mV " % (myLabel, shuntvoltage2))
+  	print("(Channel 2) %s Load Voltage 2:  %3.2f V" % (myLabel, loadvoltage2))
+  	print("(Channel 2) %s Current 2:  %3.2f mA" % (myLabel, current_mA2))
+  	print() 
 
   	shuntvoltage3 = 0
   	busvoltage3 = 0
@@ -305,17 +306,17 @@ def readThreePanelTestData(password):
 	# myLabel = "Output"
         myLabel = ""  
   
-  	print "(Channel 3) %s Bus Voltage 3:  %3.2f V " % (myLabel, busvoltage3)
-  	print "(Channel 3) %s Shunt Voltage 3: %3.2f mV " % (myLabel, shuntvoltage3)
-  	print "(Channel 3) %s Load Voltage 3:  %3.2f V" % (myLabel, loadvoltage3)
-  	print "(Channel 3) %s Current 3:  %3.2f mA" % (myLabel, current_mA3)
-  	print
+  	print("(Channel 3) %s Bus Voltage 3:  %3.2f V " % (myLabel, busvoltage3))
+  	print("(Channel 3) %s Shunt Voltage 3: %3.2f mV " % (myLabel, shuntvoltage3))
+  	print("(Channel 3) %s Load Voltage 3:  %3.2f V" % (myLabel, loadvoltage3))
+  	print("(Channel 3) %s Current 3:  %3.2f mA" % (myLabel, current_mA3))
+  	print()
 	#
 	# Now put the data in MySQL
 	# 
         # Put record in MySQL
 
-        print "writing SQLdata ";
+        print("writing SQLdata ");
 
 
         # write record
@@ -341,21 +342,21 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, channel1_load_voltage, channel1_current, channel2_load_voltage, channel2_current, channel3_load_voltage, channel3_current, id FROM '+ThreePanelTesttableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
-			print "---------"
+			print("---------")
 		except:
-			print "3---------"
+			print("3---------")
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 
-		print result[0]
+		print(result[0])
 		t = []   # time
 		u = []   # Panel 1 - Current 
 		v = []   # Panel 2 - Current 
@@ -384,7 +385,7 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 		averageCurrent2 = averageCurrent2/currentCount
 		averageCurrent3 = averageCurrent3/currentCount
 		
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
                 x1 = [d for d in t]
 
@@ -411,9 +412,9 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 		pylab.xlabel("Time")
 		pylab.ylabel("Current mA")
 		pylab.legend(loc='lower center')
-		print "-----"
-		print max(u)
-		print "-----"
+		print("-----")
+		print(max(u))
+		print("-----")
 		pylab.axis([min(fds), max(fds), 0, max(u)+20])
 		pylab.figtext(.5, .05, ("Ave Cur 1/2/3 %5.2fmA/%5.2fmA/%5.2fmA\n%s") %(averageCurrent1, averageCurrent2, averageCurrent3,  datetime.now()),fontsize=18,ha='center')
 
@@ -431,7 +432,7 @@ def buildThreePanelTestGraphCurrent(password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------ThreePanelTestGraphCurrent finished now"
+		print("------ThreePanelTestGraphCurrent finished now")
 
 
 
@@ -445,21 +446,21 @@ def buildThreePanelTestGraphVoltage(password, myGraphSampleCount):
 
     		mycursor = con1.cursor()
 
-		print myGraphSampleCount
+		print(myGraphSampleCount)
 		query = '(SELECT timestamp, deviceid, channel1_load_voltage, channel1_current, channel2_load_voltage, channel2_current, channel3_load_voltage, channel3_current, id FROM '+ThreePanelTesttableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
 
-		print "query=", query
+		print("query=", query)
 		try:
 			mycursor.execute(query)
 			result = mycursor.fetchall()
-			print "---------"
+			print("---------")
 		except:
-			print "3---------"
+			print("3---------")
 			e=sys.exc_info()[0]
-			print "Error: %s" % e
+			print("Error: %s" % e)
 
 
-		print result[0]
+		print(result[0])
 		t = []   # time
 		u = []   # Panel 1 - Voltage 
 		v = []   # Panel 2 - Voltage 
@@ -488,7 +489,7 @@ def buildThreePanelTestGraphVoltage(password, myGraphSampleCount):
 		averageCurrent2 = averageCurrent2/currentCount
 		averageCurrent3 = averageCurrent3/currentCount
 		
-		print ("count of t=",len(t))
+		print(("count of t=",len(t)))
                 #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
                 x1 = [d for d in t]
 
@@ -532,7 +533,7 @@ def buildThreePanelTestGraphVoltage(password, myGraphSampleCount):
 		pyplot.close()
 		pylab.close()
 		gc.collect()
-		print "------ThreePanelTestGraphVoltage finished now"
+		print("------ThreePanelTestGraphVoltage finished now")
 ######################################
 #
 # readThreePanelTestData and buildThreePanelTestGraph
