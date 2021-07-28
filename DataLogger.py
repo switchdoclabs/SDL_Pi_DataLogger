@@ -3,7 +3,6 @@
 # Gather Data, put in SQL, Graph with MatPlot Lib 
 # SwitchDoc Labs
 # 05/31/2016
-# Version 3.0  March 25, 2018
 #
 # supports:
 # CSVSensor
@@ -68,7 +67,7 @@ import apscheduler.events
 # constant defines
 
 #How often in seconds to sample Data
-SampleTime = 0.05
+SampleTime = 69.00
 #SampleTime = 60.0
 #How long in seconds to sample Data
 #LengthSample = 120
@@ -77,7 +76,7 @@ LengthSample = 120
 GraphRefresh = 1
 #GraphRefresh = 10.0
 #How many samples to Graph
-GraphSampleCount = 2000 
+GraphSampleCount = 10000 
 
 
 #mysql user
@@ -136,6 +135,7 @@ def doAllGraphs():
 
     if INA3221_Present:
     	INA3221Functions.buildINA3221Graph(username, password, GraphSampleCount)
+    	INA3221Functions.buildINA3221VoltageGraph(username, password, GraphSampleCount)
 
     if ADS1115_Present:
     	ADS1115Functions.buildADS1115Graph(username, password, GraphSampleCount,0)

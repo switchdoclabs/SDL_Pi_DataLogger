@@ -212,6 +212,94 @@ def buildINA3221Graph(username, password, myGraphSampleCount):
                 gc.collect()
                 print( "------INA3221Graph finished now")
 
+
+
+
+def buildINA3221VoltageGraph(username, password, myGraphSampleCount):
+                print('buildINA3221VoltageGraph - The time is: %s' % datetime.now())
+                # open database
+                con1 = mdb.connect('localhost', 'root', password, 'DataLogger' )
+                # now we have to get the data, stuff it in the graph 
+
+                mycursor = con1.cursor()
+
+                print( myGraphSampleCount)
+                query = '(SELECT timestamp, deviceid, channel1_load_voltage, channel1_current, channel2_load_voltage, channel2_current, channel3_load_voltage, channel3_current, id FROM '+INA3221tableName+' ORDER BY id DESC LIMIT '+ str(myGraphSampleCount) + ') ORDER BY id ASC' 
+
+                print(("query=", query))
+                try:
+                    mycursor.execute(query)
+                    result = mycursor.fetchall()
+                    print("---------")
+                except:
+                    print("3---------")
+                    e=sys.exc_info()[0]
+                    print("Error: %s" % e)
+
+
+                print (result[0])
+                t = []   # time
+                u = []   # channel 3 - Voltage - Load 
+                v = []   # channel 1 - Voltage - Battery 
+                averageVoltage = 0.0
+                currentCount = 0
+                for record in result:
+                    t.append(record[0])
+                    u.append(record[2])
+                    averageVoltage = averageVoltage+record[6]
+                    currentCount=currentCount+1
+
+                averageVoltage = averageVoltage/currentCount
+            
+		
+                print(("count of t=",len(t)))
+                #x1 = [datetime.strptime(d, '%Y-%m-%d %H:%M:%S',) for d in t]
+                x1 = [d for d in t]
+                
+                fds = dates.date2num(x1) # converted
+		# matplotlib date format object
+                hfmt = dates.DateFormatter('%H:%M:%S')
+		#hfmt = dates.DateFormatter('%m/%d-%H')
+
+                fig = pyplot.figure()
+                fig.set_facecolor('white')
+                ax = fig.add_subplot(111,facecolor = 'white')
+                ax.vlines(fds, -200.0, 1000.0,colors='w')
+
+
+
+		#ax.xaxis.set_major_locator(dates.MinuteLocator(interval=1))
+                ax.xaxis.set_major_formatter(hfmt)
+                ax.set_ylim(bottom = 0.0)
+                pyplot.xticks(rotation='45')
+                pyplot.subplots_adjust(bottom=.3)
+                pylab.plot(fds, u, color='r',label="Battery Voltage",linestyle="-",marker=".")
+                pylab.xlabel("Seconds")
+                pylab.ylabel("Voltage V")
+                pylab.legend(loc='lower center')
+                print("-----")
+                print(max(u))
+                print("-----")
+                pylab.axis([min(fds), max(fds), min(u)-0.05, max(u)+0.05])
+                pylab.figtext(.5, .04, ("Average Voltage %6.2fV\n%s") %(averageVoltage, datetime.now()),fontsize=14,ha='center')
+                
+                pylab.grid(True)
+                
+                pyplot.show()
+                pyplot.savefig("/var/www/html/INA3221DataLoggerVoltageGraph.png", facecolor=fig.get_facecolor())	
+                
+                
+                
+                mycursor.close()       	 
+                con1.close()
+                
+                fig.clf()
+                pyplot.close()
+                pylab.close()
+                gc.collect()
+                print( "------INA3221VoltageGraph finished now")
+
+
 ######################################
 #
 # readINA3221Data and buildINA3221Graph

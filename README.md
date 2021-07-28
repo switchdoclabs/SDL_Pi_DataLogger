@@ -1,7 +1,9 @@
 Raspberry Pi DataLogger
 SwitchDoc Labs
 
-Version 5.0
+Version 6.0
+
+June 8, 2021: Set up to use INA3221 to measure current consumption on WeatherSense units 
 
 June 8, 2021: converted to Python3
 
